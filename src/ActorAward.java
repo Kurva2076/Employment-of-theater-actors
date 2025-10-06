@@ -4,7 +4,7 @@ public class ActorAward {
 
     public ActorAward(String awardName) {
         this.awardId = CommonUtils.generateId();
-        this.awardName = awardName;
+        this.awardName = Validator.validateField(awardName, "awardName", String.class, false);
     }
 
     public Integer getAwardId() {
@@ -16,6 +16,6 @@ public class ActorAward {
     }
 
     public void setAwardName(String awardName) {
-        this.awardName = awardName;
+        this.awardName = Validator.validateField(awardName, "awardName", String.class, false);
     }
 }

@@ -4,12 +4,11 @@ public class Contract {
 
     public Contract(Double amount) {
         this.contractId = CommonUtils.generateId();
-        this.amount = amount;
+        this.amount = Validator.validateField(amount, "amount", Double.class, false);
     }
 
     public Contract(Integer amount) {
-        this.contractId = CommonUtils.generateId();
-        this.amount = Double.valueOf(amount);
+        this(Double.valueOf(amount));
     }
 
     public Integer getContractId() {
@@ -21,10 +20,10 @@ public class Contract {
     }
 
     public void setAmount(Double amount) {
-        this.amount = amount;
+        this.amount = Validator.validateField(amount, "amount", Double.class, false);
     }
 
     public void setAmount(Integer amount) {
-        this.amount = Double.valueOf(amount);
+        setAmount(Double.valueOf(amount));
     }
 }

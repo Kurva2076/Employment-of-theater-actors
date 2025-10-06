@@ -4,7 +4,7 @@ public class ActorTitle {
 
     public ActorTitle(String titleName) {
         this.titleId = CommonUtils.generateId();
-        this.titleName = titleName;
+        this.titleName = Validator.validateField(titleName, "actorTitle", String.class, false);
     }
 
     public Integer getTitleId() {
@@ -16,6 +16,6 @@ public class ActorTitle {
     }
 
     public void setTitleName(String titleName) {
-        this.titleName = titleName;
+        this.titleName = Validator.validateField(titleName, "actorTitle", String.class, false);
     }
 }

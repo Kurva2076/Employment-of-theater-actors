@@ -13,13 +13,13 @@ public class Actor {
     public Actor(String surname, String firstname, String patronymic, WorkExperience workExperience,
                  Contract contract, List<ActorTitle> actorTitles, List<ActorAward> actorAwards) {
         this.actorId = CommonUtils.generateId();
-        this.surname = surname;
-        this.firstname = firstname;
-        this.patronymic = patronymic;
-        this.workExperience = workExperience;
-        this.contract = contract;
-        this.actorTitles = actorTitles;
-        this.actorAwards = actorAwards;
+        this.surname = Validator.validateField(surname, "surname", String.class, false);
+        this.firstname = Validator.validateField(firstname, "firstname", String.class, false);
+        this.patronymic = Validator.validateField(patronymic, "patronymic", String.class,  true);
+        this.workExperience = Validator.validateField(workExperience, "workExperience", WorkExperience.class, false);
+        this.contract = Validator.validateField(contract, "contract", Contract.class, false);
+        this.actorTitles = Validator.validateField(actorTitles, "actorTitles", true);
+        this.actorAwards = Validator.validateField(actorAwards, "actorAwards", true);
     }
 
     public Actor(String surname, String firstname, WorkExperience workExperience, Contract contract,
@@ -36,7 +36,7 @@ public class Actor {
     }
 
     public void setSurname(String surname) {
-        this.surname = surname;
+        this.surname = Validator.validateField(surname, "surname", String.class, false);
     }
 
     public String getFirstname() {
@@ -44,7 +44,7 @@ public class Actor {
     }
 
     public void setFirstname(String firstname) {
-        this.firstname = firstname;
+        this.firstname = Validator.validateField(firstname, "firstname", String.class, false);
     }
 
     public String getPatronymic() {
@@ -52,7 +52,7 @@ public class Actor {
     }
 
     public void setPatronymic(String patronymic) {
-        this.patronymic = patronymic;
+        this.patronymic = Validator.validateField(patronymic, "patronymic", String.class,  true);
     }
 
     public WorkExperience getWorkExperience() {
@@ -60,7 +60,7 @@ public class Actor {
     }
 
     public void setWorkExperience(WorkExperience workExperience) {
-        this.workExperience = workExperience;
+        this.workExperience = Validator.validateField(workExperience, "workExperience", WorkExperience.class, false);
     }
 
     public Contract getContract() {
@@ -68,7 +68,7 @@ public class Actor {
     }
 
     public void setContract(Contract contract) {
-        this.contract = contract;
+        this.contract = Validator.validateField(contract, "contract", Contract.class, false);
     }
 
     public List<ActorTitle> getActorTitles() {
@@ -76,7 +76,7 @@ public class Actor {
     }
 
     public void setActorTitles(List<ActorTitle> actorTitles) {
-        this.actorTitles = actorTitles;
+        this.actorTitles = Validator.validateField(actorTitles, "actorTitles", true);
     }
 
     public List<ActorAward> getActorAwards() {
@@ -84,6 +84,6 @@ public class Actor {
     }
 
     public void setActorAwards(List<ActorAward> actorAwards) {
-        this.actorAwards = actorAwards;
+        this.actorAwards = Validator.validateField(actorAwards, "actorAwards", true);
     }
 }
