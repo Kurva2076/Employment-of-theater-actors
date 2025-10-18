@@ -14,9 +14,6 @@ public class Main {
         actorTitles.add(actorTitle);
         actorAwards.add(actorAward);
 
-        Actor actor1 = new Actor("Петров", "Пётр", "Петрович", workExperience, contract, actorTitles, actorAwards);
-        Actor actor2 = new Actor("Петров", "Петрович", workExperience, contract, actorTitles, actorAwards);
-
         // Разные способы инициализации WorkExperience и примеры валидации
         List<Object> workExperiences1 = new ArrayList<>(
                 Arrays.asList(
@@ -93,5 +90,25 @@ public class Main {
             }
         }
         System.out.println();
+
+        // Валидация Actor
+        List<String[]> actors = List.of(
+                new String[]{"Петров", "Пётр", "Петрович"},
+                new String[]{"Петров", "Пётр", null},
+                new String[]{"Д'Арк", "Жанна", null},
+                new String[]{"петрова-сидорова", "Анна", null},
+                new String[]{"Ivanov", "Петр", null},
+                new String[]{"", "Петр", null},
+                new String[]{"Иванов123", "Петр", null},
+                new String[]{String.valueOf(123), "Петр", String.valueOf(123), null}
+        );
+        for (String[] fio : actors) {
+            try {
+                Actor actor1 = new Actor(fio[0], fio[1], fio[2], workExperience, contract, actorTitles, actorAwards);
+                System.out.println(actor1);
+            } catch (Exception e) {
+                System.out.println(e);
+            }
+        }
     }
 }
