@@ -91,12 +91,16 @@ public class CommonUtils {
     public static <T> @NotNull List<String> getClassFields(@NotNull Class<T> tClass) {
         List<String> fieldNames = new ArrayList<>();
         for (Field field : tClass.getDeclaredFields()) {
-            fieldNames.add(field.getName());
+            if (!field.getName().toLowerCase().endsWith("id")) {
+                fieldNames.add(field.getName());
+            }
         }
         return fieldNames;
     }
 
     public static @NotNull Map<String, Object> makeMap(@NotNull List<String> keys, @NotNull List<?> values) {
+        System.out.println(keys);
+        System.out.println(values);
         if (keys.size() != values.size()) {
             throw new IllegalArgumentException("Списки имеют разный размер");
         }
@@ -144,6 +148,14 @@ public class CommonUtils {
         } else if (castedClass == Integer.class && originalArray instanceof Double[]) {
             for (Object o : originalArray) {
                 castedList.add(castedClass.cast(((Double) o).intValue()));
+            }
+        } else if (castedClass == ActorTitle.class && !(originalArray instanceof ActorTitle[])) {
+            for (Object o : originalArray) {
+                castedList.add(castedClass.cast(new ActorTitle(o)));
+            }
+        } else if (castedClass == ActorAward.class && !(originalArray instanceof ActorAward[])) {
+            for (Object o : originalArray) {
+                castedList.add(castedClass.cast(new ActorAward(o)));
             }
         } else {
             for (Object o : originalArray) {

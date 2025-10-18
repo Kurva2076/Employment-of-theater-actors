@@ -1,6 +1,5 @@
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.io.File;
+import java.util.*;
 
 public class Main {
     public static void main(String[] args) {
@@ -110,5 +109,36 @@ public class Main {
                 System.out.println(e);
             }
         }
+        System.out.println();
+
+        String string1 = "Петров;Пётр;;2,4,12;12000;Артист мира ЮНЕСКО,;Оскар";
+        List<Object> list1 = List.of("Петров", "Пётр", "Петрович", "365", "1234", "Артист мира ЮНЕСКО", "Оскар");
+        File file = new File("C:\\Users\\kotpl\\OneDrive\\Рабочий стол\\Уник\\4-ый курс\\ПИС\\Employment-of-theater-actors\\src\\data.json");
+        String string2 = "C:\\Users\\kotpl\\OneDrive\\Рабочий стол\\Уник\\4-ый курс\\ПИС\\Employment-of-theater-actors\\src\\data.json";
+        String string3 = "{\n" +
+                "  \"surname\": \"Иванов\",\n" +
+                "  \"firstname\": \"Петр\",\n" +
+                "  \"patronymic\": \"Сергеевич\",\n" +
+                "  \"contract\": 1234,\n" +
+                "  \"workExperience\": [1, 2, 3],\n" +
+                "  \"actorAwards\": \"Оскар\",\n" +
+                "  \"actorTitles\": [\"Артист мира ЮНЕСКО\"]\n" +
+                "}";
+        Map<?, ?> map1 = Map.of(
+                "surname", "Иванов",
+                "firstname", "Петр",
+                "contract", 1234,
+                "workExperience", List.of(1, 2, 3),
+                "actorAwards", "Оскар",
+                "actorTitles", "Артист мира ЮНЕСКО"
+        );
+        String string4 = "surname=Петров;firstname=Пётр;patronymic=;workExperience=2,4,12;contract=12000;actorTitles=Артист мира ЮНЕСКО,;actorAwards=Оскар";
+        System.out.println(new Actor(string1, "str"));
+        System.out.println(new Actor(list1, "list"));
+        System.out.println(new Actor(file, "json"));
+        System.out.println(new Actor(string2, "jsonpath"));
+        System.out.println(new Actor(string3, "json"));
+        System.out.println(new Actor(map1, "map"));
+        System.out.println(new Actor(string4, "str"));
     }
 }

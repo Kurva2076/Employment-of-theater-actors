@@ -1,0 +1,9 @@
+{
+  "surname": "Иванов",
+  "firstname": "Петр",
+  "patronymic": "Сергеевич",
+  "contract": 1234,
+  "workExperience": [1, 2, 3],
+  "actorAwards": "Оскар",
+  "actorTitles": ["Артист мира ЮНЕСКО"]
+}

@@ -1,4 +1,7 @@
+import java.io.File;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 public class Actor {
     private final Integer actorId;
@@ -11,7 +14,7 @@ public class Actor {
     private List<ActorAward> actorAwards;
 
     public Actor(String surname, String firstname, String patronymic, WorkExperience workExperience,
-                 Contract contract, List<ActorTitle> actorTitles, List<ActorAward> actorAwards) {
+                 Contract contract, List<?> actorTitles, List<?> actorAwards) {
         this.actorId = CommonUtils.generateId();
         this.surname = Validator.validateField(surname, "surname", String.class, false);
         this.firstname = Validator.validateField(firstname, "firstname", String.class, false);
@@ -27,8 +30,37 @@ public class Actor {
     }
 
     public Actor(String surname, String firstname, WorkExperience workExperience, Contract contract,
-                 List<ActorTitle> actorTitles, List<ActorAward> actorAwards) {
+                 List<?> actorTitles, List<?> actorAwards) {
         this(surname, firstname, null, workExperience, contract, actorTitles, actorAwards);
+    }
+
+    public Actor(Map<String, ?> map) {
+        this(
+                (String) map.get("surname"),
+                (String) map.get("firstname"),
+                (String) map.get("patronymic"),
+                new WorkExperience(map.get("workExperience")),
+                new Contract(map.get("contract")),
+                (map.get("actorTitles") == null) ? new ArrayList<>() : (
+                        (map.get("actorTitles") instanceof String) ? List.of(map.get("actorTitles")) :
+                        (List<?>) map.get("actorTitles")
+                ),
+                (map.get("actorAwards") == null) ? new ArrayList<>() : (
+                        (map.get("actorAwards") instanceof String) ? List.of(map.get("actorAwards")) :
+                        (List<?>) map.get("actorAwards")
+                )
+        );
+    }
+
+    public Actor(Object object, String type) {
+        this(Parser.parse(object, type, Actor.class));
+    }
+
+    public Actor(Actor actor) {
+        this(
+                actor.getSurname(), actor.getFirstname(), actor.getPatronymic(), actor.getWorkExperience(),
+                actor.getContract(), actor.getActorTitles(), actor.getActorAwards()
+        );
     }
 
     public Integer getActorId() {
@@ -87,7 +119,7 @@ public class Actor {
         return actorTitles;
     }
 
-    public void setActorTitles(List<ActorTitle> actorTitles) {
+    public void setActorTitles(List<?> actorTitles) {
         this.actorTitles = CommonUtils.casteInnerClass(
                 Validator.validateField(actorTitles, "actorTitles", List.class, false), ActorTitle.class
         );
@@ -97,7 +129,7 @@ public class Actor {
         return actorAwards;
     }
 
-    public void setActorAwards(List<ActorAward> actorAwards) {
+    public void setActorAwards(List<?> actorAwards) {
         this.actorAwards = CommonUtils.casteInnerClass(
                 Validator.validateField(actorAwards, "actorAwards", List.class, false), ActorAward.class
         );
