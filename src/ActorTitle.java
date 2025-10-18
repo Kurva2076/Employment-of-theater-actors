@@ -1,3 +1,5 @@
+import java.util.Objects;
+
 public class ActorTitle {
     private final Integer titleId;
     private String titleName;
@@ -33,5 +35,19 @@ public class ActorTitle {
 
     public void setTitleName(Object title) {
         this.titleName = Validator.validateField(title, "actorTitle", String.class, false);
+    }
+
+    @Override
+    public String toString() {
+        return titleName;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (!(obj instanceof ActorTitle actorTitle)) {
+            return false;
+        }
+
+        return titleName.equals(actorTitle.getTitleName());
     }
 }

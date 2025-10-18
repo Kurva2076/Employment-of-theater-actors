@@ -99,8 +99,6 @@ public class CommonUtils {
     }
 
     public static @NotNull Map<String, Object> makeMap(@NotNull List<String> keys, @NotNull List<?> values) {
-        System.out.println(keys);
-        System.out.println(values);
         if (keys.size() != values.size()) {
             throw new IllegalArgumentException("Списки имеют разный размер");
         }

@@ -1,4 +1,3 @@
-import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -133,5 +132,40 @@ public class Actor {
         this.actorAwards = CommonUtils.casteInnerClass(
                 Validator.validateField(actorAwards, "actorAwards", List.class, false), ActorAward.class
         );
+    }
+
+    @Override
+    public String toString() {
+        return "Фамилия: " + surname + "\n" +
+                "Имя: " + firstname + "\n" +
+                ((patronymic != null) ? "Отчество: " + patronymic + "\n": "") +
+                "Стаж: " + workExperience + "\n" +
+                "Контракт: " + contract + "\n" +
+                ((actorTitles.isEmpty()) ? "" : "Звания: " + actorTitles + "\n") +
+                ((actorAwards.isEmpty()) ? "" : "Награды: " + actorAwards + "\n");
+    }
+
+    public String shortString() {
+        return String.join(" ",surname, firstname, ((patronymic != null) ? patronymic : ""));
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (!(obj instanceof Actor actor)) {
+            return false;
+        }
+
+        boolean equalPatronymic = patronymic == null && actor.getPatronymic() != null && actor.getPatronymic().equals(patronymic) ||
+                patronymic != null && actor.getPatronymic() == null && patronymic.equals(actor.getPatronymic()) ||
+                patronymic != null && actor.getPatronymic() != null && patronymic.equals(actor.getPatronymic()) ||
+                patronymic == null && actor.getPatronymic() == null;
+
+        return surname.equals(actor.getSurname()) &&
+                firstname.equals(actor.getFirstname()) &&
+                equalPatronymic &&
+                workExperience.equals(actor.getWorkExperience()) &&
+                contract.equals(actor.getContract()) &&
+                actorTitles.containsAll(actor.getActorTitles()) &&
+                actorAwards.containsAll(actor.getActorAwards());
     }
 }

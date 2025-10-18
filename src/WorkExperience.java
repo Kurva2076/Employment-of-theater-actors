@@ -1,4 +1,5 @@
 import java.util.List;
+import java.util.Objects;
 
 public class WorkExperience {
     private Integer workExperience;
@@ -101,5 +102,25 @@ public class WorkExperience {
 
     public void setWorkExperience(Object workExperience) {
         this.workExperience = Validator.validateField(workExperience, "workExperience", Integer.class, false);
+    }
+
+    @Override
+    public String toString() {
+        Integer[] styledWorkExperience = TimeUtils.getFullDateMark(workExperience);
+        int years = styledWorkExperience[0], months = styledWorkExperience[1], days = styledWorkExperience[2];
+        String yearsName = TimeUtils.getTimeUnionName(years, "year");
+        String monthsName = TimeUtils.getTimeUnionName(months, "month");
+        String daysName = TimeUtils.getTimeUnionName(days, "day");
+
+        return String.join(" ", String.valueOf(years), yearsName, String.valueOf(months), monthsName, String.valueOf(days), daysName);
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (!(obj instanceof WorkExperience workExperience1)) {
+            return false;
+        }
+        
+        return Objects.equals(workExperience, workExperience1.getWorkExperience());
     }
 }

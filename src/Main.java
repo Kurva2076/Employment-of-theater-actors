@@ -111,6 +111,7 @@ public class Main {
         }
         System.out.println();
 
+        // Примеры парсинга разных форматов
         String string1 = "Петров;Пётр;;2,4,12;12000;Артист мира ЮНЕСКО,;Оскар";
         List<Object> list1 = List.of("Петров", "Пётр", "Петрович", "365", "1234", "Артист мира ЮНЕСКО", "Оскар");
         File file = new File("C:\\Users\\kotpl\\OneDrive\\Рабочий стол\\Уник\\4-ый курс\\ПИС\\Employment-of-theater-actors\\src\\data.json");
@@ -140,5 +141,11 @@ public class Main {
         System.out.println(new Actor(string3, "json"));
         System.out.println(new Actor(map1, "map"));
         System.out.println(new Actor(string4, "str"));
+
+        // Вывод короткой версии и сравнение двух актёров
+        Actor actor1 = new Actor(string1, "str");
+        System.out.println(actor1.shortString());
+        System.out.println(actor1.equals(new Actor(string1, "str"))); // Ожидаем true
+        System.out.println(actor1.equals(new Actor(string3, "json"))); // Ожидаем false
     }
 }

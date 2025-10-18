@@ -1,3 +1,5 @@
+import java.util.Objects;
+
 public class Contract {
     private final Integer contractId;
     private Double amount;
@@ -49,5 +51,19 @@ public class Contract {
 
     public void setAmount(Object amount) {
         this.amount = Validator.validateField(amount, "amount", Double.class, false);
+    }
+
+    @Override
+    public String toString() {
+        return amount + " руб.";
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (!(obj instanceof Contract contract)) {
+            return false;
+        }
+
+        return Objects.equals(amount, contract.getAmount());
     }
 }

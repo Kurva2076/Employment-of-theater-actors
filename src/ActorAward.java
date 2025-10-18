@@ -34,4 +34,18 @@ public class ActorAward {
     public void setAwardName(Object award) {
         this.awardName = Validator.validateField(award, "actorAward", String.class, false);
     }
+
+    @Override
+    public String toString() {
+        return awardName;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (!(obj instanceof ActorAward actorAward)) {
+            return false;
+        }
+
+        return awardName.equals(actorAward.getAwardName());
+    }
 }
