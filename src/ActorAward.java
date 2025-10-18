@@ -3,8 +3,16 @@ public class ActorAward {
     private String awardName;
 
     public ActorAward(String awardName) {
+        this((Object) awardName);
+    }
+
+    public ActorAward(ActorAward actorAward) {
+        this((Object) actorAward);
+    }
+
+    public ActorAward(Object award) {
         this.awardId = CommonUtils.generateId();
-        this.awardName = Validator.validateField(awardName, "awardName", String.class, false);
+        this.awardName = Validator.validateField(award, "actorAward", String.class, false);
     }
 
     public Integer getAwardId() {
@@ -16,6 +24,14 @@ public class ActorAward {
     }
 
     public void setAwardName(String awardName) {
-        this.awardName = Validator.validateField(awardName, "awardName", String.class, false);
+        setAwardName((Object) awardName);
+    }
+
+    public void setAwardName(ActorAward actorAward) {
+        setAwardName((Object) actorAward);
+    }
+
+    public void setAwardName(Object award) {
+        this.awardName = Validator.validateField(award, "actorAward", String.class, false);
     }
 }

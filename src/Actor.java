@@ -15,11 +15,15 @@ public class Actor {
         this.actorId = CommonUtils.generateId();
         this.surname = Validator.validateField(surname, "surname", String.class, false);
         this.firstname = Validator.validateField(firstname, "firstname", String.class, false);
-        this.patronymic = Validator.validateField(patronymic, "patronymic", String.class,  true);
-        this.workExperience = Validator.validateField(workExperience, "workExperience", WorkExperience.class, false);
-        this.contract = Validator.validateField(contract, "contract", Contract.class, false);
-        this.actorTitles = Validator.validateField(actorTitles, "actorTitles", true);
-        this.actorAwards = Validator.validateField(actorAwards, "actorAwards", true);
+        this.patronymic = Validator.validateField(patronymic, "patronymic", String.class, true);
+        this.workExperience = Validator.validateField(workExperience, "WorkExperience", WorkExperience.class, false);
+        this.contract = Validator.validateField(contract, "Contract", Contract.class, false);
+        this.actorTitles = CommonUtils.casteInnerClass(
+                Validator.validateField(actorTitles, "actorTitles", List.class, false), ActorTitle.class
+        );
+        this.actorAwards = CommonUtils.casteInnerClass(
+                Validator.validateField(actorAwards, "actorAwards", List.class, false), ActorAward.class
+        );
     }
 
     public Actor(String surname, String firstname, WorkExperience workExperience, Contract contract,
@@ -52,7 +56,7 @@ public class Actor {
     }
 
     public void setPatronymic(String patronymic) {
-        this.patronymic = Validator.validateField(patronymic, "patronymic", String.class,  true);
+        this.patronymic = Validator.validateField(patronymic, "patronymic", String.class, true);
     }
 
     public WorkExperience getWorkExperience() {
@@ -60,7 +64,11 @@ public class Actor {
     }
 
     public void setWorkExperience(WorkExperience workExperience) {
-        this.workExperience = Validator.validateField(workExperience, "workExperience", WorkExperience.class, false);
+        this.workExperience = Validator.validateField(workExperience, "WorkExperience", WorkExperience.class, false);
+    }
+
+    public void setWorkExperience(Object workExperience) {
+        this.workExperience = new WorkExperience(workExperience);
     }
 
     public Contract getContract() {
@@ -68,7 +76,11 @@ public class Actor {
     }
 
     public void setContract(Contract contract) {
-        this.contract = Validator.validateField(contract, "contract", Contract.class, false);
+        this.contract = Validator.validateField(contract, "Contract", Contract.class, false);
+    }
+
+    public void setContract(Object amount) {
+        this.contract = new Contract(amount);
     }
 
     public List<ActorTitle> getActorTitles() {
@@ -76,7 +88,9 @@ public class Actor {
     }
 
     public void setActorTitles(List<ActorTitle> actorTitles) {
-        this.actorTitles = Validator.validateField(actorTitles, "actorTitles", true);
+        this.actorTitles = CommonUtils.casteInnerClass(
+                Validator.validateField(actorTitles, "actorTitles", List.class, false), ActorTitle.class
+        );
     }
 
     public List<ActorAward> getActorAwards() {
@@ -84,6 +98,8 @@ public class Actor {
     }
 
     public void setActorAwards(List<ActorAward> actorAwards) {
-        this.actorAwards = Validator.validateField(actorAwards, "actorAwards", true);
+        this.actorAwards = CommonUtils.casteInnerClass(
+                Validator.validateField(actorAwards, "actorAwards", List.class, false), ActorAward.class
+        );
     }
 }

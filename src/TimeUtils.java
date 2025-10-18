@@ -26,6 +26,6 @@ public class TimeUtils {
     }
 
     public static @NotNull Integer convertMonthsIntoDays(@NotNull Integer months) {
-        return months * MONTHS_PER_YEAR;
+        return months * DAYS_PER_MONTH;
     }
 }

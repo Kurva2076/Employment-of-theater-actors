@@ -1,3 +1,4 @@
+import com.sun.jdi.ClassNotPreparedException;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
@@ -6,7 +7,7 @@ import java.util.List;
 import java.util.regex.Pattern;
 
 public class Validator {
-    private static final List<String> AWARD_NAMES = new ArrayList<>(
+    private static final List<String> ACTOR_AWARDS = new ArrayList<>(
             Arrays.asList("Оскар", "Золотой глобус", "Сезар", "Золотой орёл", "Сатурн")
     );
     private static final List<String> ACTOR_TITLES = new ArrayList<>(
@@ -18,59 +19,100 @@ public class Validator {
     private static final String NAME_PARTS_DELIMITERS_PATTERN = "[\\s\\-'`]";
     private static final String NAME_DUPLICATED_CHARS = "\\s\\-'`";
 
-    @org.jetbrains.annotations.Contract("null, _, _, _, false -> fail")
-    public static <T, N> T validateField(
-            N value, String type, Class<N> entranceClass, Class<T> expectedClass, boolean isNullable
-    ) {
+    @org.jetbrains.annotations.Contract("null, _, _, false -> fail; null, _, _, true -> null")
+    public static <T, N> N validateField(T value, String type, Class<N> expectedClass, boolean isNullable) {
         if (!isNullable && value == null) {
             throw new NullPointerException("Значение " + type + " не должно ровняться null");
         }
 
-        Object validatedValue;
-        if (type.equals("amount") && entranceClass == Double.class) {
-            validatedValue = validateAmount((Double) value);
-        } else if (type.equals("awardName") && entranceClass == String.class) {
-            validatedValue = validateAwardName((String) value);
-        } else if (type.equals("actorTitle") && entranceClass == String.class) {
-            validatedValue = validateActorTitle((String) value);
-        } else if (type.equals("workExperience") && entranceClass == Integer[].class) {
-            validatedValue = validateWorkExperience((Integer[]) value);
-        } else if (type.equals("surname") && entranceClass == String.class) {
-            validatedValue = validateSurname((String) value);
-        } else if (type.equals("firstname") && entranceClass == String.class) {
-            validatedValue = validateFirstname((String) value);
-        } else if (type.equals("patronymic") && entranceClass == String.class) {
-            validatedValue = validatePatronymic((String) value);
-        } else {
-            if (
-                    type.equals("workExperience") && entranceClass == WorkExperience.class ||
-                            type.equals("contract") && entranceClass == Contract.class
-            ) {
-                validatedValue = value;
-            } else {
-                throw new IllegalArgumentException("Значения параметра " + type + " не корректно");
-            }
+        if (isNullable && value == null) {
+            return null;
         }
 
-        return expectedClass.cast(validatedValue);
+        Object validatedValue = switch (type) {
+            case "amount" -> validateAmount(value);
+            case "actorAward" -> validateActorAward(value);
+            case "actorTitle" -> validateActorTitle(value);
+            case "workExperience" -> validateWorkExperience(value);
+            case "surname" -> validateSurname((String) value);
+            case "firstname" -> validateFirstname((String) value);
+            case "patronymic" -> validatePatronymic((String) value);
+            case "actorTitles", "actorAwards" -> validateList((List<?>) value, true, false);
+            case "Contract", "WorkExperience", "ActorTitle", "ActorAward" -> value;
+            default -> throw new IllegalArgumentException("Значения параметра " + type + " не корректно");
+        };
+
+        try {
+            return expectedClass.cast(validatedValue);
+        } catch (ClassCastException _) {
+            throw new RuntimeException("Поле " + type + " не может приводиться к типу " + expectedClass);
+        }
     }
 
-    @org.jetbrains.annotations.Contract("null, _, _, false -> fail")
-    public static <T> T validateField(
-            T value, String type, Class<T> usedClass, boolean isNullable
-    ) {
-        return validateField(value, type, usedClass, usedClass, isNullable);
-    }
-
-    @org.jetbrains.annotations.Contract("_, _, true -> param1")
-    public static <T> @NotNull List<T> validateField(
-            @NotNull List<T> list, @NotNull String type, boolean canBeEmpty
-    ) {
-        if (!canBeEmpty && list.isEmpty()) {
-            throw new IllegalArgumentException("Список " + type + " не может быть пустым");
+    public static @NotNull Object[] validateArray(@NotNull Object[] list, boolean canBeEmpty, boolean canContainNull) {
+        if (!canBeEmpty && list.length == 0) {
+            throw new IllegalArgumentException("Список/массив не может быть пустым");
+        } else if (!canContainNull && CommonUtils.containNull(list)) {
+            throw new IllegalArgumentException("Список/массив не может содержать null");
         }
 
         return list;
+    }
+
+    public static @NotNull List<?> validateList(@NotNull List<?> list, boolean canBeEmpty, boolean canContainNull) {
+        Object[] validatedArray = validateArray(list.toArray(), canBeEmpty, canContainNull);
+
+        return List.of(validatedArray);
+    }
+
+    public static @NotNull String validateNumber(@NotNull String number, String numberType) {
+        if (number.isEmpty()) {
+            return "0";
+        }
+
+        String preparedNumber = CommonUtils.removeDuplicatedChars(
+                CommonUtils.removeChars(number.strip(), "\\+\\_\\ "), "\\.\\-"
+        );
+        if (Pattern.compile("[^\\d\\-.]").matcher(preparedNumber).results().findAny().isPresent()) {
+            throw new IllegalArgumentException("Значение " + numberType + " содержит недопустимые символы");
+        } else if (Pattern.compile("^-?\\d+(?:\\.\\d+)?$").matcher(preparedNumber).results().findAny().isEmpty()) {
+            throw new NumberFormatException("Значение " + numberType + " заданно в некорректном формате");
+        }
+
+        return preparedNumber;
+    }
+
+    public static @NotNull String validateFullNamePart(@NotNull String name, String nameType) {
+        if (name.isEmpty()) {
+            throw new IllegalArgumentException("Значение " + nameType + " не может быть пустым");
+        }
+
+        String preparedName = CommonUtils.removeDuplicatedChars(name.strip(), NAME_DUPLICATED_CHARS);
+        if (Pattern.compile("[^А-ЯЁа-яё\\s\\-'`]").matcher(preparedName).results().findAny().isPresent()) {
+            throw new IllegalArgumentException("Значение " + nameType + " содержит недопустимые символы");
+        } else if (Pattern.compile("^[А-ЯЁа-яё]+(?:[\\s\\-'`][А-ЯЁа-яё]+)*$").matcher(preparedName).results().findAny().isEmpty()) {
+            throw new IllegalArgumentException("Значение " + nameType + " не соответствует стандартному виду");
+        }
+
+        return CommonUtils.capitalize(preparedName, NAME_PARTS_DELIMITERS_PATTERN);
+    }
+
+    private static Double validateAmount(Object amount) {
+        return switch (amount) {
+            case String string -> validateAmount(string);
+            case Integer integer -> validateAmount(integer);
+            case Double aDouble -> validateAmount(aDouble);
+            case Contract contract -> contract.getAmount();
+            default -> throw new ClassNotPreparedException("Класс объекта не соответствует возможным");
+        };
+    }
+
+    private static Double validateAmount(String amount) {
+        return validateAmount(Double.valueOf(validateNumber(amount, "amount")));
+    }
+
+    private static Double validateAmount(Integer amount) {
+        return validateAmount(amount.doubleValue());
     }
 
     private static Double validateAmount(Double amount) {
@@ -81,12 +123,28 @@ public class Validator {
         return amount;
     }
 
-    private static String validateAwardName(String awardName) {
-        if (!AWARD_NAMES.contains(awardName)) {
+    private static String validateActorAward(Object award) {
+        return switch (award) {
+            case String string -> validateActorAward(string);
+            case ActorAward actorAward -> actorAward.getAwardName();
+            default -> throw new ClassNotPreparedException("Класс объекта не соответствует возможным");
+        };
+    }
+
+    private static String validateActorAward(String actorAward) {
+        if (!ACTOR_AWARDS.contains(actorAward)) {
             throw new IllegalArgumentException("Такой награды для актёров не существует");
         }
 
-        return awardName;
+        return actorAward;
+    }
+
+    private static String validateActorTitle(Object title) {
+        return switch (title) {
+            case String string -> validateActorTitle(string);
+            case ActorTitle actorTitle -> actorTitle.getTitleName();
+            default -> throw new ClassNotPreparedException("Класс объекта не соответствует возможным");
+        };
     }
 
     private static String validateActorTitle(String actorTitle) {
@@ -97,7 +155,41 @@ public class Validator {
         return actorTitle;
     }
 
+    private static Integer validateWorkExperience(Object object) {
+        return switch (object) {
+            case WorkExperience workExperience -> workExperience.getWorkExperience();
+            case Integer integer -> validateWorkExperience(integer);
+            case Double aDouble -> validateWorkExperience(aDouble);
+            case String string -> validateWorkExperience(string);
+            case Integer[] integers -> validateWorkExperience((Integer[]) validateArray(integers, false, false));
+            case Double[] doubles -> validateWorkExperience((Double[]) validateArray(doubles, false, false));
+            case String[] strings -> validateWorkExperience((String[]) validateArray(strings, false, false));
+            case List<?> list -> validateWorkExperience(validateList(list, false, false));
+            default -> throw new ClassNotPreparedException("Класс объекта не соответствует возможным");
+        };
+    }
+
+    private static Integer validateWorkExperience(Integer workExperience) {
+        if (workExperience < 0) {
+            throw new IllegalArgumentException("Стаж не может быть отрицательным числом");
+        }
+
+        return workExperience;
+    }
+
+    private static Integer validateWorkExperience(Double workExperience) {
+        return validateWorkExperience(workExperience.intValue());
+    }
+
+    private static Integer validateWorkExperience(String workExperience) {
+        return validateWorkExperience(CommonUtils.convertNumberToInteger(validateNumber(workExperience, "workExperience")));
+    }
+
     private static Integer validateWorkExperience(Integer[] workExperience) {
+        if (workExperience.length != 3) {
+            throw new IllegalArgumentException("В массиве должно содержаться ровно 3 элемента (количество лет, месяцев, дней)");
+        }
+
         int years = workExperience[0], months = workExperience[1], days = workExperience[2];
 
         if (years < 0 || months < 0 || days < 0) {
@@ -105,6 +197,22 @@ public class Validator {
         }
 
         return TimeUtils.convertYearsIntoDays(years) + TimeUtils.convertMonthsIntoDays(months) + days;
+    }
+
+    private static Integer validateWorkExperience(Double[] workExperience) {
+        return validateWorkExperience(CommonUtils.casteInnerClass(workExperience, Integer.class).toArray(new Integer[0]));
+    }
+
+    private static Integer validateWorkExperience(String[] workExperience) {
+        List<Integer> list = new ArrayList<>();
+        for (String string : workExperience) {
+            list.add(CommonUtils.convertNumberToInteger(validateNumber(string, "workExperience element")));
+        }
+        return validateWorkExperience(list.toArray(new Integer[0]));
+    }
+
+    private static Integer validateWorkExperience(List<?> workExperience) {
+        return validateWorkExperience(CommonUtils.convertListToArray(workExperience));
     }
 
     private static String validateSurname(String surname) {
@@ -116,26 +224,10 @@ public class Validator {
     }
 
     private static String validatePatronymic(String patronymic) {
-        if (patronymic == null) {
+        if (patronymic == null || patronymic.isBlank()) {
             return null;
         }
 
         return validateFullNamePart(patronymic, "patronymic");
-    }
-
-    private static String validateFullNamePart(String name, String nameType) {
-        if (name.isEmpty()) {
-            throw new IllegalArgumentException("Значение " + nameType + " не может быть пустым");
-        }
-
-        String preparedName = CommonUtils.removeDuplicatedChars(name, NAME_DUPLICATED_CHARS);
-        if (Pattern.compile("[^А-ЯЁа-яё\\s\\-'`]").matcher(preparedName).results().findAny().isPresent()) {
-            throw new IllegalArgumentException("Значение " + nameType + " содержит недопустимые символы");
-        }
-        if (Pattern.compile("^[А-ЯЁа-яё]+(?:[\\s\\-'`][А-ЯЁа-яё]+)*$").matcher(preparedName).results().findAny().isEmpty()) {
-            throw new IllegalArgumentException("Значение " + nameType + " не соответствует стандартному виду");
-        }
-
-        return CommonUtils.capitalize(preparedName, NAME_PARTS_DELIMITERS_PATTERN);
     }
 }
