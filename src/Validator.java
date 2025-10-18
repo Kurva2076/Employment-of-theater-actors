@@ -37,6 +37,7 @@ public class Validator {
             case "surname" -> validateSurname((String) value);
             case "firstname" -> validateFirstname((String) value);
             case "patronymic" -> validatePatronymic((String) value);
+            case "phone" -> validatePhone((String) value);
             case "actorTitles", "actorAwards" -> validateList((List<?>) value, true, false);
             case "Contract", "WorkExperience", "ActorTitle", "ActorAward" -> value;
             default -> throw new IllegalArgumentException("Значения параметра " + type + " не корректно");
@@ -229,5 +230,20 @@ public class Validator {
         }
 
         return validateFullNamePart(patronymic, "patronymic");
+    }
+
+    public static String validatePhone(String phone) {
+        phone = CommonUtils.removeChars(phone, "- ()+");
+        if (phone.isBlank()) {
+            throw new IllegalArgumentException("Телефон не может быть пустой строкой");
+        }
+        if (Pattern.compile("\\D").matcher(phone).find()) {
+            throw new IllegalArgumentException("Телефон содержит недопустимые символы");
+        }
+        if (!Pattern.compile("^[78]?\\d{10}$").matcher(phone).find()) {
+            throw new IllegalArgumentException("Формат телефона не соответствует");
+        }
+
+        return phone;
     }
 }
