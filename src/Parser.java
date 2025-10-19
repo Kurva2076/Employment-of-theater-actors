@@ -11,6 +11,10 @@ import java.util.Map;
 import java.util.regex.Pattern;
 
 public class Parser {
+    private static final Map<Class<?>, List<String>> EXCLUDED_FIELDS = Map.of(
+            Actor.class, List.of("actorId", "initials")
+    );
+
     public static <T, N> Map<String, ?> parse(@NotNull T rawData, @NotNull String dataType, @NotNull Class<N> requiredClass) {
         return switch (rawData) {
             case String string when dataType.equals("json") -> parseJsonString(string);
@@ -21,7 +25,15 @@ public class Parser {
                     (dataType.equals("string") || dataType.equals("str")) &&
                             Pattern.compile("(?:[\\w\\s]+=[^=\\n;]*[\\n;])+").matcher(string).results().toList().size() == 1
             ) -> parseMapString(string);
-            default -> CommonUtils.makeMap(CommonUtils.getClassFields(requiredClass), parse(rawData, dataType));
+            default -> {
+                List<String> list = new ArrayList<>();
+                Class<?> providedClass = requiredClass;
+                while (providedClass != Object.class) {
+                    list.addAll(CommonUtils.getClassFields(providedClass, EXCLUDED_FIELDS.get(requiredClass)));
+                    providedClass = providedClass.getSuperclass();
+                }
+                yield CommonUtils.makeMap(list, parse(rawData, dataType));
+            }
         };
     }
 

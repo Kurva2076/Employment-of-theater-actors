@@ -92,18 +92,18 @@ public class Main {
 
         // Валидация Actor
         List<String[]> actors = List.of(
-                new String[]{"Петров", "Пётр", "Петрович"},
-                new String[]{"Петров", "Пётр", null},
-                new String[]{"Д'Арк", "Жанна", null},
-                new String[]{"петрова-сидорова", "Анна", null},
-                new String[]{"Ivanov", "Петр", null},
-                new String[]{"", "Петр", null},
-                new String[]{"Иванов123", "Петр", null},
-                new String[]{String.valueOf(123), "Петр", String.valueOf(123), null}
+                new String[]{"Петров", "Пётр", "Петрович", "9183288772"},
+                new String[]{"Петров", "Пётр", null, "9183288772"},
+                new String[]{"Д'Арк", "Жанна", null, "9183288772"},
+                new String[]{"петрова-сидорова", "Анна-мАрИя", null, "9183288772"},
+                new String[]{"Ivanov", "Петр", null, "9183288772"},
+                new String[]{"", "Петр", null, "9183288772"},
+                new String[]{"Иванов123", "Петр", null, "9183288772"},
+                new String[]{String.valueOf(123), "Петр", String.valueOf(123), null, "9183288772"}
         );
         for (String[] fio : actors) {
             try {
-                Actor actor1 = new Actor(fio[0], fio[1], fio[2], workExperience, contract, actorTitles, actorAwards);
+                Actor actor1 = new Actor(fio[0], fio[1], fio[2], fio[3], workExperience, contract, actorTitles, actorAwards);
                 System.out.println(actor1);
             } catch (Exception e) {
                 System.out.println(e);
@@ -112,28 +112,31 @@ public class Main {
         System.out.println();
 
         // Примеры парсинга разных форматов
-        String string1 = "Петров;Пётр;;2,4,12;12000;Артист мира ЮНЕСКО,;Оскар";
-        List<Object> list1 = List.of("Петров", "Пётр", "Петрович", "365", "1234", "Артист мира ЮНЕСКО", "Оскар");
-        File file = new File("C:\\Users\\kotpl\\OneDrive\\Рабочий стол\\Уник\\4-ый курс\\ПИС\\Employment-of-theater-actors\\src\\data.json");
-        String string2 = "C:\\Users\\kotpl\\OneDrive\\Рабочий стол\\Уник\\4-ый курс\\ПИС\\Employment-of-theater-actors\\src\\data.json";
-        String string3 = "{\n" +
-                "  \"surname\": \"Иванов\",\n" +
-                "  \"firstname\": \"Петр\",\n" +
-                "  \"patronymic\": \"Сергеевич\",\n" +
-                "  \"contract\": 1234,\n" +
-                "  \"workExperience\": [1, 2, 3],\n" +
-                "  \"actorAwards\": \"Оскар\",\n" +
-                "  \"actorTitles\": [\"Артист мира ЮНЕСКО\"]\n" +
-                "}";
+        String string1 = "2,4,12;12000;Артист мира ЮНЕСКО,;;Петров;Пётр;;9183288772";
+        List<Object> list1 = List.of("365", "1234", "", "Оскар", "Петров", "Пётр", "Петрович", "9183288772");
+        File file = new File("src/data.json");
+        String string2 = "src/data.json";
+        String string3 = """
+                {
+                  "surname": "Иванов",
+                  "firstname": "Петр",
+                  "patronymic": "Сергеевич",
+                  "phone": "9183288772",
+                  "contract": 1234,
+                  "workExperience": [1, 2, 3],
+                  "actorAwards": "Оскар",
+                  "actorTitles": ["Артист мира ЮНЕСКО"]
+                }""";
         Map<?, ?> map1 = Map.of(
                 "surname", "Иванов",
                 "firstname", "Петр",
+                "phone", "9183288772",
                 "contract", 1234,
                 "workExperience", List.of(1, 2, 3),
-                "actorAwards", "Оскар",
+                "actorAwards", List.of("Оскар", "Золотой орёл"),
                 "actorTitles", "Артист мира ЮНЕСКО"
         );
-        String string4 = "surname=Петров;firstname=Пётр;patronymic=;workExperience=2,4,12;contract=12000;actorTitles=Артист мира ЮНЕСКО,;actorAwards=Оскар";
+        String string4 = "surname=Петров;firstname=Пётр;patronymic=;phone=9183288772;workExperience=2,4,12;contract=12000;actorTitles=Артист мира ЮНЕСКО,;actorAwards=Оскар";
         System.out.println(new Actor(string1, "str"));
         System.out.println(new Actor(list1, "list"));
         System.out.println(new Actor(file, "json"));

@@ -2,6 +2,7 @@
   "surname": "Иванов",
   "firstname": "Петр",
   "patronymic": "Сергеевич",
+  "phone": "9183288772",
   "contract": 1234,
   "workExperience": [1, 2, 3],
   "actorAwards": "Оскар",

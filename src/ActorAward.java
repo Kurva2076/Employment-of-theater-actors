@@ -48,4 +48,9 @@ public class ActorAward {
 
         return awardName.equals(actorAward.getAwardName());
     }
+
+    @Override
+    public int hashCode() {
+        return awardName.hashCode();
+    }
 }

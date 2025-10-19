@@ -16,7 +16,7 @@ public class Validator {
                     "Народный артист СССР", "Артист мира ЮНЕСКО"
             )
     );
-    private static final String NAME_PARTS_DELIMITERS_PATTERN = "[\\s\\-'`]";
+    public static final String NAME_PARTS_DELIMITERS_PATTERN = "[\\s\\-'`]";
     private static final String NAME_DUPLICATED_CHARS = "\\s\\-'`";
 
     @org.jetbrains.annotations.Contract("null, _, _, false -> fail; null, _, _, true -> null")
@@ -244,6 +244,6 @@ public class Validator {
             throw new IllegalArgumentException("Формат телефона не соответствует");
         }
 
-        return phone;
+        return (phone.length() == 10) ? phone : phone.substring(1);
     }
 }

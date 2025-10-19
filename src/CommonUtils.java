@@ -88,14 +88,18 @@ public class CommonUtils {
         return listData.replace("[", "").replace("]", "").strip();
     }
 
-    public static <T> @NotNull List<String> getClassFields(@NotNull Class<T> tClass) {
+    public static <T> @NotNull List<String> getClassFields(@NotNull Class<T> tClass, @NotNull List<String> excludedFields) {
         List<String> fieldNames = new ArrayList<>();
         for (Field field : tClass.getDeclaredFields()) {
-            if (!field.getName().toLowerCase().endsWith("id")) {
+            if (!excludedFields.contains(field.getName())) {
                 fieldNames.add(field.getName());
             }
         }
         return fieldNames;
+    }
+
+    public static <T> @NotNull List<String> getClassFields(@NotNull Class<T> tClass) {
+        return getClassFields(tClass, new ArrayList<>());
     }
 
     public static @NotNull Map<String, Object> makeMap(@NotNull List<String> keys, @NotNull List<?> values) {
@@ -193,5 +197,37 @@ public class CommonUtils {
 
     public static boolean containNull(List<?> objects) {
         return containNull(objects.toArray());
+    }
+
+    public static String formatPhone(String phone) {
+        return "+7 (" + phone.substring(0, 3) + ") " + phone.substring(3, 6) + "-" + phone.substring(6, 8) + "-" + phone.substring(8);
+    }
+
+    public static String getInitials(String surname, String firstname, String patronymic) {
+        return surname + " " + getShortName(firstname) + (patronymic != null ? getShortName(patronymic) : "");
+    }
+
+    private static String getShortName(String name) {
+        Pattern delimitersPattern = Pattern.compile(Validator.NAME_PARTS_DELIMITERS_PATTERN, Pattern.CASE_INSENSITIVE|Pattern.MULTILINE);
+        Matcher matcher = delimitersPattern.matcher(name);
+        String[] nameParts = delimitersPattern.split(name);
+        List<String> shortNameParts = new ArrayList<>();
+        int index = 0;
+
+        while (matcher.find()) {
+            shortNameParts.add(nameParts[index].charAt(0) + "." + name.substring(matcher.start(), matcher.end()));
+            index++;
+        }
+        shortNameParts.add(nameParts[index].charAt(0) + ".");
+
+        return String.join("", shortNameParts);
+    }
+
+    public static String listToString(List<?> list) {
+        String string = "";
+        for (Object o : list) {
+            string = string.concat(o.toString()) + (o.equals(list.getLast()) ? "" : ", ");
+        }
+        return string;
     }
 }

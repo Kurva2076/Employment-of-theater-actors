@@ -1,23 +1,22 @@
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 
-public class Actor {
+public class Actor extends PublicActor {
     private final Integer actorId;
-    private String surname;
-    private String firstname;
-    private String patronymic;
+    private final String initials;
     private WorkExperience workExperience;
     private Contract contract;
     private List<ActorTitle> actorTitles;
     private List<ActorAward> actorAwards;
 
-    public Actor(String surname, String firstname, String patronymic, WorkExperience workExperience,
+    public Actor(String surname, String firstname, String patronymic, String phone, WorkExperience workExperience,
                  Contract contract, List<?> actorTitles, List<?> actorAwards) {
+        super(surname, firstname, patronymic, phone);
+
         this.actorId = CommonUtils.generateId();
-        this.surname = Validator.validateField(surname, "surname", String.class, false);
-        this.firstname = Validator.validateField(firstname, "firstname", String.class, false);
-        this.patronymic = Validator.validateField(patronymic, "patronymic", String.class, true);
+        this.initials = CommonUtils.getInitials(getSurname(), getFirstname(), getPatronymic());
         this.workExperience = Validator.validateField(workExperience, "WorkExperience", WorkExperience.class, false);
         this.contract = Validator.validateField(contract, "Contract", Contract.class, false);
         this.actorTitles = CommonUtils.casteInnerClass(
@@ -29,8 +28,8 @@ public class Actor {
     }
 
     public Actor(String surname, String firstname, WorkExperience workExperience, Contract contract,
-                 List<?> actorTitles, List<?> actorAwards) {
-        this(surname, firstname, null, workExperience, contract, actorTitles, actorAwards);
+                 List<?> actorTitles, List<?> actorAwards, String phone) {
+        this(surname, firstname, null, phone, workExperience, contract, actorTitles, actorAwards);
     }
 
     public Actor(Map<String, ?> map) {
@@ -38,15 +37,20 @@ public class Actor {
                 (String) map.get("surname"),
                 (String) map.get("firstname"),
                 (String) map.get("patronymic"),
+                (String) map.get("phone"),
                 new WorkExperience(map.get("workExperience")),
                 new Contract(map.get("contract")),
                 (map.get("actorTitles") == null) ? new ArrayList<>() : (
-                        (map.get("actorTitles") instanceof String) ? List.of(map.get("actorTitles")) :
-                        (List<?>) map.get("actorTitles")
+                        (!(map.get("actorTitles") instanceof String)) ? (List<?>) map.get("actorTitles") : (
+                                (map.get("actorTitles").toString().isBlank()) ? new ArrayList<>() :
+                                        List.of(map.get("actorTitles"))
+                        )
                 ),
                 (map.get("actorAwards") == null) ? new ArrayList<>() : (
-                        (map.get("actorAwards") instanceof String) ? List.of(map.get("actorAwards")) :
-                        (List<?>) map.get("actorAwards")
+                        (!(map.get("actorAwards") instanceof String)) ? (List<?>) map.get("actorAwards") : (
+                                (map.get("actorAwards").toString().isBlank()) ? new ArrayList<>() :
+                                        List.of(map.get("actorAwards"))
+                        )
                 )
         );
     }
@@ -57,8 +61,8 @@ public class Actor {
 
     public Actor(Actor actor) {
         this(
-                actor.getSurname(), actor.getFirstname(), actor.getPatronymic(), actor.getWorkExperience(),
-                actor.getContract(), actor.getActorTitles(), actor.getActorAwards()
+                actor.getSurname(), actor.getFirstname(), actor.getPatronymic(), actor.getPhone(),
+                actor.getWorkExperience(), actor.getContract(), actor.getActorTitles(), actor.getActorAwards()
         );
     }
 
@@ -66,28 +70,8 @@ public class Actor {
         return actorId;
     }
 
-    public String getSurname() {
-        return surname;
-    }
-
-    public void setSurname(String surname) {
-        this.surname = Validator.validateField(surname, "surname", String.class, false);
-    }
-
-    public String getFirstname() {
-        return firstname;
-    }
-
-    public void setFirstname(String firstname) {
-        this.firstname = Validator.validateField(firstname, "firstname", String.class, false);
-    }
-
-    public String getPatronymic() {
-        return patronymic;
-    }
-
-    public void setPatronymic(String patronymic) {
-        this.patronymic = Validator.validateField(patronymic, "patronymic", String.class, true);
+    public String getInitials() {
+        return initials;
     }
 
     public WorkExperience getWorkExperience() {
@@ -136,17 +120,16 @@ public class Actor {
 
     @Override
     public String toString() {
-        return "Фамилия: " + surname + "\n" +
-                "Имя: " + firstname + "\n" +
-                ((patronymic != null) ? "Отчество: " + patronymic + "\n": "") +
+        return super.toString() +
+                "Инициалы: " + initials + "\n" +
                 "Стаж: " + workExperience + "\n" +
                 "Контракт: " + contract + "\n" +
-                ((actorTitles.isEmpty()) ? "" : "Звания: " + actorTitles + "\n") +
-                ((actorAwards.isEmpty()) ? "" : "Награды: " + actorAwards + "\n");
+                ((actorTitles.isEmpty()) ? "" : "Звания: " + CommonUtils.listToString(actorTitles) + "\n") +
+                ((actorAwards.isEmpty()) ? "" : "Награды: " + CommonUtils.listToString(actorAwards) + "\n");
     }
 
     public String shortString() {
-        return String.join(" ",surname, firstname, ((patronymic != null) ? patronymic : ""));
+        return String.join(" ", getSurname(), getFirstname(), ((getPatronymic() != null) ? getPatronymic() : ""));
     }
 
     @Override
@@ -155,17 +138,10 @@ public class Actor {
             return false;
         }
 
-        boolean equalPatronymic = patronymic == null && actor.getPatronymic() != null && actor.getPatronymic().equals(patronymic) ||
-                patronymic != null && actor.getPatronymic() == null && patronymic.equals(actor.getPatronymic()) ||
-                patronymic != null && actor.getPatronymic() != null && patronymic.equals(actor.getPatronymic()) ||
-                patronymic == null && actor.getPatronymic() == null;
-
-        return surname.equals(actor.getSurname()) &&
-                firstname.equals(actor.getFirstname()) &&
-                equalPatronymic &&
+        return super.equals(obj) &&
                 workExperience.equals(actor.getWorkExperience()) &&
                 contract.equals(actor.getContract()) &&
-                actorTitles.containsAll(actor.getActorTitles()) &&
-                actorAwards.containsAll(actor.getActorAwards());
+                new HashSet<>(actorTitles).containsAll(actor.getActorTitles()) &&
+                new HashSet<>(actorAwards).containsAll(actor.getActorAwards());
     }
 }

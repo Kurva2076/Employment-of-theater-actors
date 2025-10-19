@@ -46,4 +46,26 @@ public class PublicActor {
     public void setPhone(String phone) {
         this.phone = Validator.validateField(phone, "phone", String.class, false);
     }
+
+    @Override
+    public String toString() {
+        return "Фамилия: " + surname + "\n" +
+                "Имя: " + firstname + "\n" +
+                ((patronymic != null) ? "Отчество: " + patronymic + "\n": "") +
+                "Телефон: " + CommonUtils.formatPhone(phone) + "\n";
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (!(obj instanceof PublicActor publicActor)) {
+            return false;
+        }
+
+        boolean equalPatronymic = patronymic != null && publicActor.patronymic != null && patronymic.equals(publicActor.patronymic) || patronymic == null && publicActor.patronymic == null;
+
+        return surname.equals(publicActor.surname) &&
+                firstname.equals(publicActor.firstname) &&
+                equalPatronymic &&
+                phone.equals(publicActor.phone);
+    }
 }

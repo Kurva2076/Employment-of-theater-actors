@@ -1,5 +1,3 @@
-import java.util.Objects;
-
 public class ActorTitle {
     private final Integer titleId;
     private String titleName;
@@ -49,5 +47,10 @@ public class ActorTitle {
         }
 
         return titleName.equals(actorTitle.getTitleName());
+    }
+
+    @Override
+    public int hashCode() {
+        return titleName.hashCode();
     }
 }
