@@ -2,7 +2,7 @@ import java.io.File;
 import java.util.*;
 
 public class Main {
-    public static void main(String[] args) {
+    private static void showBaseActorFunctions() {
         WorkExperience workExperience = new WorkExperience(2, 4, 12);
         Contract contract = new Contract(123456);
         ActorTitle actorTitle = new ActorTitle("Артист мира ЮНЕСКО");
@@ -33,7 +33,7 @@ public class Main {
                 WorkExperience workExperience1 = new WorkExperience(object);
                 System.out.println(workExperience1.getWorkExperience());
             } catch (Exception e) {
-                System.out.println(e);
+                System.out.println(e.getMessage());
             }
         }
         Integer[] workExperience2 = new Integer[]{1, 2, 3};
@@ -59,7 +59,7 @@ public class Main {
                 Contract contract1 = new Contract(object);
                 System.out.println(contract1.getAmount());
             } catch (Exception e) {
-                System.out.println(e);
+                System.out.println(e.getMessage());
             }
         }
         System.out.println();
@@ -71,7 +71,7 @@ public class Main {
                 ActorAward actorAward1 = new ActorAward(object);
                 System.out.println(actorAward1.getAwardName());
             } catch (Exception e) {
-                System.out.println(e);
+                System.out.println(e.getMessage());
             }
         }
         System.out.println();
@@ -85,7 +85,7 @@ public class Main {
                 ActorTitle actorTitle1 = new ActorTitle(object);
                 System.out.println(actorTitle1.getTitleName());
             } catch (Exception e) {
-                System.out.println(e);
+                System.out.println(e.getMessage());
             }
         }
         System.out.println();
@@ -106,7 +106,7 @@ public class Main {
                 Actor actor1 = new Actor(fio[0], fio[1], fio[2], fio[3], workExperience, contract, actorTitles, actorAwards);
                 System.out.println(actor1);
             } catch (Exception e) {
-                System.out.println(e);
+                System.out.println(e.getMessage());
             }
         }
         System.out.println();
@@ -150,5 +150,9 @@ public class Main {
         System.out.println(actor1.shortString());
         System.out.println(actor1.equals(new Actor(string1, "str"))); // Ожидаем true
         System.out.println(actor1.equals(new Actor(string3, "json"))); // Ожидаем false
+    }
+
+    public static void main(String[] args) {
+        Main.showBaseActorFunctions();
     }
 }
