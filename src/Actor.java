@@ -11,11 +11,16 @@ public class Actor extends PublicActor {
     private List<ActorTitle> actorTitles;
     private List<ActorAward> actorAwards;
 
-    public Actor(String surname, String firstname, String patronymic, String phone, WorkExperience workExperience,
-                 Contract contract, List<?> actorTitles, List<?> actorAwards) {
+    public Actor(Number actorId, String surname, String firstname, String patronymic, String phone,
+                 WorkExperience workExperience, Contract contract, List<?> actorTitles, List<?> actorAwards) {
         super(surname, firstname, patronymic, phone);
 
-        this.actorId = CommonUtils.generateId();
+        if (actorId == null) {
+            this.actorId = CommonUtils.generateId();
+        } else {
+            this.actorId = Validator.validateField(actorId, "id", Integer.class, false);
+        }
+
         this.initials = CommonUtils.getInitials(getSurname(), getFirstname(), getPatronymic());
         this.workExperience = Validator.validateField(workExperience, "WorkExperience", WorkExperience.class, false);
         this.contract = Validator.validateField(contract, "Contract", Contract.class, false);
@@ -29,11 +34,12 @@ public class Actor extends PublicActor {
 
     public Actor(String surname, String firstname, WorkExperience workExperience, Contract contract,
                  List<?> actorTitles, List<?> actorAwards, String phone) {
-        this(surname, firstname, null, phone, workExperience, contract, actorTitles, actorAwards);
+        this(null, surname, firstname, null, phone, workExperience, contract, actorTitles, actorAwards);
     }
 
     public Actor(Map<String, ?> map) {
         this(
+                (Number) map.get("actorId"),
                 (String) map.get("surname"),
                 (String) map.get("firstname"),
                 (String) map.get("patronymic"),
@@ -61,7 +67,7 @@ public class Actor extends PublicActor {
 
     public Actor(Actor actor) {
         this(
-                actor.getSurname(), actor.getFirstname(), actor.getPatronymic(), actor.getPhone(),
+                null, actor.getSurname(), actor.getFirstname(), actor.getPatronymic(), actor.getPhone(),
                 actor.getWorkExperience(), actor.getContract(), actor.getActorTitles(), actor.getActorAwards()
         );
     }
@@ -120,7 +126,8 @@ public class Actor extends PublicActor {
 
     @Override
     public String toString() {
-        return super.toString() +
+        return "ID: " + actorId + "\n" +
+                super.toString() +
                 "Инициалы: " + initials + "\n" +
                 "Стаж: " + workExperience + "\n" +
                 "Контракт: " + contract + "\n" +

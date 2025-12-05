@@ -30,6 +30,7 @@ public class Validator {
         }
 
         Object validatedValue = switch (type) {
+            case "id" -> validateId(value);
             case "amount" -> validateAmount(value);
             case "actorAward" -> validateActorAward(value);
             case "actorTitle" -> validateActorTitle(value);
@@ -48,6 +49,26 @@ public class Validator {
         } catch (ClassCastException _) {
             throw new RuntimeException("Поле " + type + " не может приводиться к типу " + expectedClass);
         }
+    }
+
+    private static Integer validateId(Object id) {
+        return switch (id) {
+            case Integer integer -> validateID(integer);
+            case Double iDouble -> validateID(iDouble);
+            default -> throw new ClassNotPreparedException("Класс объекта не соответствует возможным");
+        };
+    }
+
+    private static Integer validateID(Integer id) {
+        if (id <= 0) {
+            throw new IllegalArgumentException("Id должен быть больше 0");
+        }
+
+        return id;
+    }
+
+    private static Integer validateID(Double id) {
+        return validateID(id.intValue());
     }
 
     public static @NotNull Object[] validateArray(@NotNull Object[] list, boolean canBeEmpty, boolean canContainNull) {
