@@ -158,7 +158,7 @@ public class Validator {
 
     private static Integer validateWorkExperience(Object object) {
         return switch (object) {
-            case WorkExperience workExperience -> workExperience.getWorkExperience();
+            case WorkExperience workExperience -> workExperience.getDays();
             case Integer integer -> validateWorkExperience(integer);
             case Double aDouble -> validateWorkExperience(aDouble);
             case String string -> validateWorkExperience(string);

@@ -2,18 +2,18 @@ import java.util.List;
 import java.util.Objects;
 
 public class WorkExperience {
-    private Integer workExperience;
+    private Integer days;
 
-    public WorkExperience(Integer[] workExperience) {
-        this((Object) workExperience);
+    public WorkExperience(Integer[] days) {
+        this((Object) days);
     }
 
-    public WorkExperience(Double[] workExperience) {
-        this((Object) workExperience);
+    public WorkExperience(Double[] days) {
+        this((Object) days);
     }
 
-    public WorkExperience(String[] workExperience) {
-        this((Object) workExperience);
+    public WorkExperience(String[] days) {
+        this((Object) days);
     }
 
     public WorkExperience(Integer years, Integer months, Integer days) {
@@ -28,36 +28,36 @@ public class WorkExperience {
         this(new String[]{years, months, days});
     }
 
-    public WorkExperience(Integer workExperience) {
-        this(0, 0, workExperience);
+    public WorkExperience(Integer days) {
+        this(0, 0, days);
     }
 
-    public WorkExperience(Double workExperience) {
-        this(0.0, 0.0, workExperience);
+    public WorkExperience(Double days) {
+        this(0.0, 0.0, days);
     }
 
-    public WorkExperience(String workExperience) {
-        this("0", "0", workExperience);
+    public WorkExperience(String days) {
+        this("0", "0", days);
     }
 
-    public WorkExperience(List<?> workExperience) {
-        this((Object) workExperience);
+    public WorkExperience(List<?> days) {
+        this((Object) days);
     }
 
-    public WorkExperience(WorkExperience workExperience) {
-        this((Object) workExperience);
+    public WorkExperience(WorkExperience days) {
+        this((Object) days);
     }
 
-    public WorkExperience(Object workExperience) {
-        this.workExperience = Validator.validateField(workExperience, "workExperience", Integer.class, false);
+    public WorkExperience(Object days) {
+        this.days = Validator.validateField(days, "workExperience", Integer.class, false);
     }
 
-    public Integer getWorkExperience() {
-        return workExperience;
+    public Integer getDays() {
+        return days;
     }
 
-    public void setWorkExperience(Integer[] workExperience) {
-        setWorkExperience((Object) workExperience);
+    public void setDays(Integer[] days) {
+        setWorkExperience((Object) days);
     }
 
     public void setWorkExperience(Double[] workExperience) {
@@ -69,7 +69,7 @@ public class WorkExperience {
     }
 
     public void setWorkExperience(Integer years, Integer months, Integer days) {
-        setWorkExperience(new Integer[]{years, months, days});
+        setDays(new Integer[]{years, months, days});
     }
 
     public void setWorkExperience(Double years, Double months, Double days) {
@@ -101,12 +101,12 @@ public class WorkExperience {
     }
 
     public void setWorkExperience(Object workExperience) {
-        this.workExperience = Validator.validateField(workExperience, "workExperience", Integer.class, false);
+        this.days = Validator.validateField(workExperience, "workExperience", Integer.class, false);
     }
 
     @Override
     public String toString() {
-        Integer[] styledWorkExperience = TimeUtils.getFullDateMark(workExperience);
+        Integer[] styledWorkExperience = TimeUtils.getFullDateMark(days);
         int years = styledWorkExperience[0], months = styledWorkExperience[1], days = styledWorkExperience[2];
         String yearsName = TimeUtils.getTimeUnionName(years, "year");
         String monthsName = TimeUtils.getTimeUnionName(months, "month");
@@ -121,6 +121,6 @@ public class WorkExperience {
             return false;
         }
         
-        return Objects.equals(workExperience, workExperience1.getWorkExperience());
+        return Objects.equals(days, workExperience1.getDays());
     }
 }
