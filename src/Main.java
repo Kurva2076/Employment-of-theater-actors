@@ -56,7 +56,7 @@ public class Main {
         ));
         for (Object object : contracts1) {
             try {
-                Contract contract1 = new Contract(object);
+                Contract contract1 = new Contract(null, object);
                 System.out.println(contract1.getAmount());
             } catch (Exception e) {
                 System.out.println(e.getMessage());
@@ -68,7 +68,7 @@ public class Main {
         List<Object> actorAwards1 = new ArrayList<>(Arrays.asList("", "Оскар", actorAwards.getFirst(), contract, null));
         for (Object object : actorAwards1) {
             try {
-                ActorAward actorAward1 = new ActorAward(object);
+                ActorAward actorAward1 = new ActorAward(null, object);
                 System.out.println(actorAward1.getAwardName());
             } catch (Exception e) {
                 System.out.println(e.getMessage());
@@ -82,7 +82,7 @@ public class Main {
         ));
         for (Object object : actorTitles1) {
             try {
-                ActorTitle actorTitle1 = new ActorTitle(object);
+                ActorTitle actorTitle1 = new ActorTitle(null, object);
                 System.out.println(actorTitle1.getTitleName());
             } catch (Exception e) {
                 System.out.println(e.getMessage());
@@ -305,10 +305,120 @@ public class Main {
         System.out.println("\n\n");
     }
 
+    private static void showActorRepDBFunctions() {
+
+        ActorRepDB db = new ActorRepDB(
+                "jdbc:postgresql://localhost:5432/pis",
+                "myuser",
+                "1234"
+        );
+
+        Actor actor = new Actor(
+                null,
+                "Иванов",
+                "Иван",
+                "Иванович",
+                "+79998887766",
+                new WorkExperience(100),
+                new Contract(50000.0),
+                List.of(new ActorTitle("Артист мира ЮНЕСКО"), new ActorTitle("Народный артист СССР")),
+                List.of(new ActorAward("Оскар"), new ActorAward("Золотой орёл"))
+        );
+        String string1 = "2,4,12;12000.32;;;Петров;Пётр;;9183288772";
+        List<Object> list1 = List.of("365", "10000000.52", "", "Оскар", "Пупков", "Пуп", "Пупович", "9180888772");
+        File file = new File("src/data.yaml");
+        String string2 = "src/data.yaml";
+        String string3 = """
+                surname: "Кален"
+                firstname: "Эдвард"
+                patronymic: "Карлайлович"
+                phone: "89186482734"
+                contract: 465312
+                workExperience: [1, 2, 3]
+                actorAwards: ["Сатурн"]
+                actorTitles: ["Народный артист СССР"]
+                """;
+        Map<?, ?> map1 = Map.of(
+                "surname", "Кален",
+                "firstname", "Карлайл",
+                "phone", "9187283994",
+                "contract", 798456,
+                "workExperience", List.of(1, 2, 3),
+                "actorAwards", List.of("Оскар", "Золотой орёл"),
+                "actorTitles", "Артист мира ЮНЕСКО"
+        );
+        String string4 = "surname=Сергеев;firstname=Сергей;patronymic=;phone=9183288662;workExperience=3,8,7;contract=52;actorTitles=Артист мира ЮНЕСКО,Народный артист СССР;actorAwards=Сезар";
+
+        System.out.println("Добавляем актёров:");
+        Actor actor1 = db.add(actor);
+        Actor actor2 = db.add(new Actor(string1, "str"));
+        Actor actor3 = db.add(new Actor(list1, "list"));
+        Actor actor4 = db.add(new Actor(file, "yaml"));
+        Actor actor5 = db.add(new Actor(string2, "yamlpath"));
+        Actor actor6 = db.add(new Actor(string3, "yaml"));
+        Actor actor7 = db.add(new Actor(map1, "map"));
+        Actor actor8 = db.add(new Actor(string4, "str"));
+        System.out.println(actor1);
+        System.out.println(actor2);
+        System.out.println(actor3);
+        System.out.println(actor4);
+        System.out.println(actor5);
+        System.out.println(actor6);
+        System.out.println(actor7);
+        System.out.println(actor8);
+        System.out.println("----------------------------");
+
+
+        System.out.println("Получаем по ID = " + actor2.getActorId());
+        Actor extracted = db.getById(actor2.getActorId());
+        System.out.println(extracted);
+        System.out.println("----------------------------");
+
+        System.out.println("Список публичных актёров (k=1, n=3):");
+        for (PublicActor p : db.getKNShortList(1, 3)) {
+            System.out.println(p);
+        }
+        System.out.println("----------------------------");
+
+        System.out.println("Обновляем актёра...");
+        Actor updatedActor = new Actor(
+                null,
+                "Петров",
+                "Пётр",
+                "Петрович",
+                "+77771112233",
+                new WorkExperience(200),
+                new Contract(99999.0),
+                List.of(new ActorTitle("Народный артист Российской Федерации")),
+                List.of(new ActorAward("Сатурн"))
+        );
+
+        db.update(actor2.getActorId(), updatedActor);
+
+        System.out.println("После обновления:");
+        System.out.println(db.getById(actor2.getActorId()));
+        System.out.println("----------------------------");
+
+        System.out.println("Количество актёров:");
+        System.out.println(db.getCount());
+        System.out.println("----------------------------");
+
+        System.out.println("Удаляем актёра с ID " + actor2.getActorId());
+        db.delete(actor2.getActorId());
+        System.out.println("Теперь getById возвращает:");
+        System.out.println(db.getById(actor2.getActorId()));
+        System.out.println("----------------------------");
+        
+        System.out.println("Количество актёров после удаления:");
+        System.out.println(db.getCount());
+    }
+
     public static void main(String[] args) {
 //        Main.showActorFunctions();
 
-        Main.showActorRepJsonFunctions();
-        Main.showActorRepYamlFunctions();
+//        Main.showActorRepJsonFunctions();
+//        Main.showActorRepYamlFunctions();
+
+        Main.showActorRepDBFunctions();
     }
 }
