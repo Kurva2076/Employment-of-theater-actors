@@ -306,12 +306,13 @@ public class Main {
     }
 
     private static void showActorRepDBFunctions() {
-
-        ActorRepDB db = new ActorRepDB(
+        DatabaseManager dbManager = DatabaseManager.getInstance(
                 "jdbc:postgresql://localhost:5432/pis",
                 "myuser",
                 "1234"
         );
+
+        ActorRepDB db = new ActorRepDB(dbManager);
 
         Actor actor = new Actor(
                 null,
@@ -408,7 +409,7 @@ public class Main {
         System.out.println("Теперь getById возвращает:");
         System.out.println(db.getById(actor2.getActorId()));
         System.out.println("----------------------------");
-        
+
         System.out.println("Количество актёров после удаления:");
         System.out.println(db.getCount());
     }

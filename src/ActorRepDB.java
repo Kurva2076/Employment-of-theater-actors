@@ -1,416 +1,262 @@
-import java.sql.*;
+import java.sql.SQLException;
 import java.util.*;
 
 public class ActorRepDB {
+    private final DatabaseManager db;
 
-    private final String url;
-    private final String user;
-    private final String password;
-
-    public ActorRepDB(String url, String user, String password) {
-        this.url = url;
-        this.user = user;
-        this.password = password;
+    public ActorRepDB(DatabaseManager db) {
+        this.db = db;
     }
 
-    private Connection connect() throws SQLException {
-        return DriverManager.getConnection(url, user, password);
-    }
-
-    /**
-     * Получить Actor по ID
-     */
     public Actor getById(long id) {
-        String sql = "SELECT * FROM actor WHERE actor_id = ?";
+        try {
+            Map<String, Object> row = db.fetchOne(
+                    "SELECT * FROM actor WHERE actor_id = ?",
+                    id
+            );
+            if (row == null) return null;
 
-        try (Connection conn = connect();
-             PreparedStatement ps = conn.prepareStatement(sql)) {
-
-            ps.setLong(1, id);
-            ResultSet rs = ps.executeQuery();
-
-            if (!rs.next()) return null;
-
-            return extractActor(rs, conn);
-
+            return extractActor(row);
         } catch (SQLException e) {
             throw new RuntimeException("Ошибка getById", e);
         }
     }
 
-    /**
-     * k-й список n элементов (PublicActor)
-     */
     public List<PublicActor> getKNShortList(int k, int n) {
         int offset = (k - 1) * n;
 
-        String sql = """
-            SELECT surname, firstname, patronymic, phone
-            FROM actor
-            ORDER BY actor_id
-            LIMIT ? OFFSET ?
-            """;
+        try {
+            List<Map<String, Object>> rows = db.fetchAll(
+                    "SELECT surname, firstname, patronymic, phone " +
+                            "FROM actor ORDER BY actor_id LIMIT ? OFFSET ?",
+                    n, offset
+            );
 
-        List<PublicActor> list = new ArrayList<>();
-
-        try (Connection conn = connect();
-             PreparedStatement ps = conn.prepareStatement(sql)) {
-
-            ps.setInt(1, n);
-            ps.setInt(2, offset);
-
-            ResultSet rs = ps.executeQuery();
-
-            while (rs.next()) {
+            List<PublicActor> list = new ArrayList<>();
+            for (var r : rows) {
                 list.add(new PublicActor(
-                        rs.getString("surname"),
-                        rs.getString("firstname"),
-                        rs.getString("patronymic"),
-                        rs.getString("phone")
+                        (String) r.get("surname"),
+                        (String) r.get("firstname"),
+                        (String) r.get("patronymic"),
+                        (String) r.get("phone")
                 ));
             }
-
+            return list;
         } catch (SQLException e) {
             throw new RuntimeException("Ошибка getKNShortList", e);
         }
-
-        return list;
     }
 
-    /**
-     * Добавить Actor (с авто-ID)
-     */
     public Actor add(Actor actor) {
-        String sqlActor = """
-            INSERT INTO actor (surname, firstname, patronymic, phone, work_experience, contract_id)
-            VALUES (?, ?, ?, ?, ?, ?)
-            RETURNING actor_id
-            """;
+        try {
+            db.begin();
 
-        try (Connection conn = connect()) {
-            conn.setAutoCommit(true);
+            long contractId = saveContract(actor.getContract());
 
-            Long contractId = saveContract(actor.getContract(), conn);
-            long actorId;
+            long actorId = db.insertReturningId(
+                    "INSERT INTO actor (surname, firstname, patronymic, phone, work_experience, contract_id) " +
+                            "VALUES (?, ?, ?, ?, ?, ?) RETURNING actor_id",
+                    actor.getSurname(),
+                    actor.getFirstname(),
+                    actor.getPatronymic(),
+                    actor.getPhone(),
+                    actor.getWorkExperience().getDays(),
+                    contractId
+            );
 
-            try (PreparedStatement ps = conn.prepareStatement(sqlActor)) {
-                ps.setString(1, actor.getSurname());
-                ps.setString(2, actor.getFirstname());
-                ps.setString(3, actor.getPatronymic());
-                ps.setString(4, actor.getPhone());
-                ps.setLong(5, actor.getWorkExperience().getDays());
-                ps.setLong(6, contractId);
+            setPrivateField(actor, "actorId", (int) actorId);
 
-                ResultSet rs = ps.executeQuery();
-                rs.next();
-                actorId = rs.getLong(1);
-            }
+            saveTitles(actorId, actor.getActorTitles());
+            saveAwards(actorId, actor.getActorAwards());
 
-            System.out.println("actorID " + actorId);
-
-            saveTitles(actorId, actor.getActorTitles(), conn);
-            saveAwards(actorId, actor.getActorAwards(), conn);
-
-            conn.commit();
-
-            try {
-                var field = Actor.class.getDeclaredField("actorId");
-                field.setAccessible(true);
-                field.set(actor, (int) actorId);
-            } catch (Exception e) {
-                throw new RuntimeException("Не удалось установить новый actorId", e);
-            }
-
+            db.commit();
             return actor;
         } catch (Exception e) {
+            db.rollback();
             throw new RuntimeException("Ошибка add", e);
         }
     }
 
-    /**
-     * Заменить Actor по ID
-     */
     public void update(long id, Actor actor) {
+        try {
+            db.begin();
 
-        String sqlActor = """
-            UPDATE actor
-            SET surname=?, firstname=?, patronymic=?, phone=?, work_experience=?, contract_id=?
-            WHERE actor_id=?
-            """;
+            long contractId = saveContract(actor.getContract());
 
-        try (Connection conn = connect()) {
+            db.execute(
+                    "UPDATE actor SET surname=?, firstname=?, patronymic=?, phone=?, work_experience=?, contract_id=? " +
+                            "WHERE actor_id=?",
+                    actor.getSurname(),
+                    actor.getFirstname(),
+                    actor.getPatronymic(),
+                    actor.getPhone(),
+                    actor.getWorkExperience().getDays(),
+                    contractId,
+                    id
+            );
 
-            conn.setAutoCommit(false);
+            db.execute("DELETE FROM actor_actor_title WHERE actor_id=?", id);
+            db.execute("DELETE FROM actor_actor_award WHERE actor_id=?", id);
 
-            Long contractId = saveContract(actor.getContract(), conn);
+            saveTitles(id, actor.getActorTitles());
+            saveAwards(id, actor.getActorAwards());
 
-            try (PreparedStatement ps = conn.prepareStatement(sqlActor)) {
-                ps.setString(1, actor.getSurname());
-                ps.setString(2, actor.getFirstname());
-                ps.setString(3, actor.getPatronymic());
-                ps.setString(4, actor.getPhone());
-                ps.setLong(5, actor.getWorkExperience().getDays());
-                ps.setObject(6, contractId);
-                ps.setLong(7, id);
-                ps.executeUpdate();
-            }
-
-            // Очистить связи
-            try (PreparedStatement ps = conn.prepareStatement(
-                    "DELETE FROM actor_actor_title WHERE actor_id=?")) {
-                ps.setLong(1, id);
-                ps.executeUpdate();
-            }
-            try (PreparedStatement ps = conn.prepareStatement(
-                    "DELETE FROM actor_actor_award WHERE actor_id=?")) {
-                ps.setLong(1, id);
-                ps.executeUpdate();
-            }
-
-            // Добавить новые
-            saveTitles(id, actor.getActorTitles(), conn);
-            saveAwards(id, actor.getActorAwards(), conn);
-
-            conn.commit();
-
+            db.commit();
         } catch (Exception e) {
+            db.rollback();
             throw new RuntimeException("Ошибка update", e);
         }
     }
 
-    /**
-     * Удалить Actor
-     */
     public void delete(long id) {
-        String sql = "DELETE FROM actor WHERE actor_id=?";
-
-        try (Connection conn = connect();
-             PreparedStatement ps = conn.prepareStatement(sql)) {
-
-            ps.setLong(1, id);
-            ps.executeUpdate();
-
+        try {
+            db.execute("DELETE FROM actor WHERE actor_id=?", id);
         } catch (SQLException e) {
             throw new RuntimeException("Ошибка delete", e);
         }
     }
 
-    /**
-     * Получить количество
-     */
     public long getCount() {
-        String sql = "SELECT COUNT(*) FROM actor";
-
-        try (Connection conn = connect();
-             PreparedStatement ps = conn.prepareStatement(sql)) {
-            ResultSet rs = ps.executeQuery();
-            rs.next();
-            return rs.getLong(1);
+        try {
+            Long count = db.fetchScalar("SELECT COUNT(*) FROM actor");
+            return count != null ? count : 0L;
         } catch (SQLException e) {
             throw new RuntimeException("Ошибка getCount", e);
         }
     }
 
-    /**
-     * ВСПОМОГАТЕЛЬНЫЕ МЕТОДЫ
-     */
-    private Actor extractActor(ResultSet rs, Connection conn) throws SQLException {
-        long actorId = rs.getLong("actor_id");
+    private Actor extractActor(Map<String, Object> row) throws SQLException {
 
-        String surname = rs.getString("surname");
-        String firstname = rs.getString("firstname");
-        String patronymic = rs.getString("patronymic");
-        String phone = rs.getString("phone");
-        long work = rs.getLong("work_experience");
-        long contractId = rs.getLong("contract_id");
+        int actorId = (int) row.get("actor_id");
 
-        Contract contract = null;
-        if (contractId != 0) {
-            contract = getContract(contractId, conn);
-        }
+        int contractId = (int) row.get("contract_id");
 
-        List<ActorTitle> titles = getTitles(actorId, conn);
-        List<ActorAward> awards = getAwards(actorId, conn);
+        Contract contract = contractId == 0 ? null : getContract(contractId);
+
+        List<ActorTitle> titles = getTitles(actorId);
+        List<ActorAward> awards = getAwards(actorId);
 
         return new Actor(
                 actorId,
-                surname,
-                firstname,
-                patronymic,
-                phone,
-                new WorkExperience((int) work),
+                (String) row.get("surname"),
+                (String) row.get("firstname"),
+                (String) row.get("patronymic"),
+                (String) row.get("phone"),
+                new WorkExperience(((Number) row.get("work_experience")).intValue()),
                 contract,
                 titles,
                 awards
         );
     }
 
-    private Long saveContract(Contract contract, Connection conn) throws SQLException {
-        if (contract == null) return null;
+    private long saveContract(Contract c) throws SQLException {
+        if (c == null) return 0;
 
-        String sql = "INSERT INTO contract(amount) VALUES(?) RETURNING contract_id";
+        long id = db.insertReturningId(
+                "INSERT INTO contract(amount) VALUES(?) RETURNING contract_id",
+                c.getAmount()
+        );
 
-        try (PreparedStatement ps = conn.prepareStatement(sql)) {
-            ps.setDouble(1, contract.getAmount());
-            ResultSet rs = ps.executeQuery();
-            rs.next();
-            long id = rs.getLong(1);
-            try {
-                var field = Contract.class.getDeclaredField("contractId");
-                field.setAccessible(true);
-                field.set(contract, (int) id);
-            } catch (Exception e) {
-                throw new RuntimeException("Не удалось установить новый contractId", e);
-            }
-            return id;
-        }
+        setPrivateField(c, "contractId", (int) id);
+
+        return id;
     }
 
-    private Contract getContract(long id, Connection conn) throws SQLException {
-        String sql = "SELECT amount FROM contract WHERE contract_id=?";
+    private Contract getContract(long id) throws SQLException {
+        Map<String, Object> row = db.fetchOne(
+                "SELECT amount FROM contract WHERE contract_id=?",
+                id
+        );
+        if (row == null) return null;
 
-        try (PreparedStatement ps = conn.prepareStatement(sql)) {
-            ps.setLong(1, id);
-            ResultSet rs = ps.executeQuery();
-            if (!rs.next()) return null;
-            String amount = rs.getString("amount");
-            return new Contract(id, amount);
-        }
+        return new Contract(id, row.get("amount").toString());
     }
 
-    private void saveTitles(long actorId, List<ActorTitle> list, Connection conn) throws SQLException {
+    private void saveTitles(long actorId, List<ActorTitle> list) throws SQLException {
         if (list == null) return;
 
         for (ActorTitle t : list) {
-            long titleId = insertOrGetTitle(t, conn);
 
-            try (PreparedStatement ps = conn.prepareStatement(
-                    "INSERT INTO actor_actor_title(actor_id, title_id) VALUES (?,?)"
-            )) {
-                ps.setLong(1, actorId);
-                ps.setLong(2, titleId);
-                long row = ps.executeUpdate();
-                System.out.println("Число вставленных строк в actor_actor_title: " + row);
-            }
+            long titleId = db.insertReturningId(
+                    "INSERT INTO actor_title(title_name) VALUES(?) " +
+                            "ON CONFLICT(title_name) DO UPDATE SET title_name=EXCLUDED.title_name " +
+                            "RETURNING title_id",
+                    t.getTitleName()
+            );
+
+            setPrivateField(t, "titleId", (int) titleId);
+
+            db.execute(
+                    "INSERT INTO actor_actor_title(actor_id, title_id) VALUES(?, ?)",
+                    actorId, titleId
+            );
         }
     }
 
-    private long insertOrGetTitle(ActorTitle t, Connection conn) throws SQLException {
-
-        String sql = """
-        INSERT INTO actor_title(title_name)
-        VALUES (?)
-        ON CONFLICT(title_name)
-        DO UPDATE SET title_name = EXCLUDED.title_name
-        RETURNING title_id
-        """;
-
-        try (PreparedStatement ps = conn.prepareStatement(sql)) {
-            ps.setString(1, t.getTitleName());
-            ResultSet rs = ps.executeQuery();
-            rs.next();
-            long id = rs.getLong(1);
-
-            // Присвоим настоящий ID объекту
-            try {
-                var field = ActorTitle.class.getDeclaredField("titleId");
-                field.setAccessible(true);
-                field.set(t, (int) id);
-            } catch (Exception e) {
-                throw new RuntimeException("Не удалось установить titleId", e);
-            }
-
-            return id;
-        }
-    }
-
-    private List<ActorTitle> getTitles(long actorId, Connection conn) throws SQLException {
-        String sql = """
-            SELECT t.title_id, t.title_name
-            FROM actor_title t
-            JOIN actor_actor_title aat ON t.title_id = aat.title_id
-            WHERE aat.actor_id = ?
-            """;
+    private List<ActorTitle> getTitles(long actorId) throws SQLException {
+        List<Map<String, Object>> rows = db.fetchAll(
+                "SELECT t.title_id, t.title_name FROM actor_title t " +
+                        "JOIN actor_actor_title a ON a.title_id = t.title_id " +
+                        "WHERE a.actor_id=?",
+                actorId
+        );
 
         List<ActorTitle> list = new ArrayList<>();
-
-        try (PreparedStatement ps = conn.prepareStatement(sql)) {
-            ps.setLong(1, actorId);
-            ResultSet rs = ps.executeQuery();
-            while (rs.next()) {
-                Long titleId = rs.getLong("title_id");
-                String titleName = rs.getString("title_name");
-                list.add(new ActorTitle(titleId, titleName));
-            }
+        for (var r : rows) {
+            list.add(new ActorTitle(
+                    (int) r.get("title_id"),
+                    r.get("title_name")
+            ));
         }
         return list;
     }
 
-    private void saveAwards(long actorId, List<ActorAward> list, Connection conn) throws SQLException {
+    private void saveAwards(long actorId, List<ActorAward> list) throws SQLException {
         if (list == null) return;
 
-        for (ActorAward a : list) {
-            long awardId = insertOrGetAward(a, conn);
+        for (ActorAward t : list) {
 
-            try (PreparedStatement ps = conn.prepareStatement(
-                    "INSERT INTO actor_actor_award(actor_id, award_id) VALUES (?,?)"
-            )) {
-                ps.setLong(1, actorId);
-                ps.setLong(2, awardId);
-                long row = ps.executeUpdate();
-                System.out.println("Число вставленных строк в actor_actor_award: " + row);
-            }
+            long id = db.insertReturningId(
+                    "INSERT INTO actor_award(award_name) VALUES(?) " +
+                            "ON CONFLICT(award_name) DO UPDATE SET award_name=EXCLUDED.award_name " +
+                            "RETURNING award_id",
+                    t.getAwardName()
+            );
+
+            setPrivateField(t, "awardId", (int) id);
+
+            db.execute(
+                    "INSERT INTO actor_actor_award(actor_id, award_id) VALUES(?, ?)",
+                    actorId, id
+            );
         }
     }
 
-    private long insertOrGetAward(ActorAward a, Connection conn) throws SQLException {
-
-        String sql = """
-        INSERT INTO actor_award(award_name)
-        VALUES (?)
-        ON CONFLICT(award_name)
-        DO UPDATE SET award_name = EXCLUDED.award_name
-        RETURNING award_id
-        """;
-
-        try (PreparedStatement ps = conn.prepareStatement(sql)) {
-            ps.setString(1, a.getAwardName());
-            ResultSet rs = ps.executeQuery();
-            rs.next();
-            long id = rs.getLong(1);
-
-            // Установим правильный ID в объект
-            try {
-                var field = ActorAward.class.getDeclaredField("awardId");
-                field.setAccessible(true);
-                field.set(a, (int) id);
-            } catch (Exception e) {
-                throw new RuntimeException("Не удалось установить awardId", e);
-            }
-
-            return id;
-        }
-    }
-
-    private List<ActorAward> getAwards(long actorId, Connection conn) throws SQLException {
-        String sql = """
-            SELECT a.award_id, a.award_name
-            FROM actor_award a
-            JOIN actor_actor_award aaa ON a.award_id = aaa.award_id
-            WHERE aaa.actor_id = ?
-            """;
+    private List<ActorAward> getAwards(long actorId) throws SQLException {
+        List<Map<String, Object>> rows = db.fetchAll(
+                "SELECT a.award_id, a.award_name FROM actor_award a " +
+                        "JOIN actor_actor_award aw ON aw.award_id = a.award_id " +
+                        "WHERE aw.actor_id=?",
+                actorId
+        );
 
         List<ActorAward> list = new ArrayList<>();
-
-        try (PreparedStatement ps = conn.prepareStatement(sql)) {
-            ps.setLong(1, actorId);
-            ResultSet rs = ps.executeQuery();
-            while (rs.next()) {
-                Long awardId = rs.getLong("award_id");
-                String awardName = rs.getString("award_name");
-                list.add(new ActorAward(awardId, awardName));
-            }
+        for (var r : rows) {
+            list.add(new ActorAward(
+                    (int) r.get("award_id"),
+                    r.get("award_name")
+            ));
         }
         return list;
+    }
+
+    private void setPrivateField(Object obj, String name, int value) {
+        try {
+            var field = obj.getClass().getDeclaredField(name);
+            field.setAccessible(true);
+            field.set(obj, value);
+        } catch (Exception e) {
+            throw new RuntimeException("Ошибка присвоения приватного поля " + name, e);
+        }
     }
 }
