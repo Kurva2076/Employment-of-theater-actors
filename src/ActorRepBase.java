@@ -171,7 +171,7 @@ public abstract class ActorRepBase {
     /**
      * Добавить объект в список (формирования нового ID)
      */
-    public void add(Actor actor) {
+    public Actor add(Actor actor) {
         List<Actor> actors = readAll();
         int newId = getNextId();
 
@@ -185,6 +185,8 @@ public abstract class ActorRepBase {
 
         actors.add(actor);
         writeAll(actors, false);
+
+        return actor;
     }
 
     /**
