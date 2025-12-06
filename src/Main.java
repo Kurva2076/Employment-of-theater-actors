@@ -227,8 +227,83 @@ public class Main {
         }
     }
 
+    private static void showActorRepYamlFunctions() {
+        ActorRepYaml actorRepYaml = new ActorRepYaml("src/actors.yaml");
+
+        String string1 = "2,4,12;12000.32;Артист мира ЮНЕСКО,;;Петров;Пётр;;9183288772";
+        List<Object> list1 = List.of("365", "10000000.52", "", "Оскар", "Пупков", "Пуп", "Пупович", "9180888772");
+        File file = new File("src/data.yaml");
+        String string2 = "src/data.yaml";
+        String string3 = """
+                surname: "Кален"
+                firstname: "Эдвард"
+                patronymic: "Карлайлович"
+                phone: "89186482734"
+                contract: 465312
+                workExperience: [1, 2, 3]
+                actorAwards: "Сатурн"
+                actorTitles: ["Народный артист СССР"]
+                """;
+        Map<?, ?> map1 = Map.of(
+                "surname", "Кален",
+                "firstname", "Карлайл",
+                "phone", "9187283994",
+                "contract", 798456,
+                "workExperience", List.of(1, 2, 3),
+                "actorAwards", List.of("Оскар", "Золотой орёл"),
+                "actorTitles", "Артист мира ЮНЕСКО"
+        );
+        String string4 = "surname=Сергеев;firstname=Сергей;patronymic=;phone=9183288662;workExperience=3,8,7;contract=52;actorTitles=Артист мира ЮНЕСКО,Народный артист СССР;actorAwards=Сезар";
+
+        actorRepYaml.writeAll(List.of(new Actor(string1, "str"), new Actor(list1, "list"), new Actor(file, "yaml")), true);
+        actorRepYaml.add(new Actor(string2, "yamlpath"));
+        actorRepYaml.add(new Actor(string3, "yaml"));
+        actorRepYaml.add(new Actor(map1, "map"));
+        actorRepYaml.add(new Actor(string4, "str"));
+
+        System.out.println("Все актёры");
+        for (Actor actor : actorRepYaml.readAll()) {
+            System.out.println(actor);
+        }
+
+        System.out.println("Актёр с id = 5");
+        System.out.println(actorRepYaml.getById(5));
+
+        System.out.println("Актёры со 2-ой страницы по 3 актёра");
+        for (Actor actor : actorRepYaml.getKNShortList(2, 3)) {
+            System.out.println(actor);
+        }
+
+        System.out.println("Отсортированные актёры по стажу");
+        for (Actor actor : actorRepYaml.sortBy("workExperience")) {
+            System.out.println(actor);
+        }
+
+        System.out.println("Замена актёра с id = 3");
+        if (actorRepYaml.replaceById(3, new Actor(string1, "str"))) {
+            System.out.println(actorRepYaml.getById(3));
+        } else {
+            System.out.println("Не удалось произвести замену, так как актёра с id = 3 не существует");
+        }
+
+        System.out.println("Замена актёра с id = 10");
+        if (actorRepYaml.replaceById(10, new Actor(string1, "str"))) {
+            System.out.println(actorRepYaml.getById(10));
+        } else {
+            System.out.println("Не удалось произвести замену, так как актёра с id = 10 не существует");
+        }
+
+        System.out.println("Количество актёров: " + actorRepYaml.getCount());
+        if (actorRepYaml.deleteById(7)) {
+            System.out.println("Количество актёров после удаления: " + actorRepYaml.getCount());
+        } else {
+            System.out.println("Не удалось удалить, так как актёра с id = 7 не существует");
+        }
+    }
+
     public static void main(String[] args) {
 //        Main.showActorFunctions();
-        Main.showActorRepJsonFunctions();
+//        Main.showActorRepJsonFunctions();
+        Main.showActorRepYamlFunctions();
     }
 }
