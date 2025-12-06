@@ -1,7 +1,4 @@
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class Actor extends PublicActor {
     private final Integer actorId;
@@ -150,5 +147,25 @@ public class Actor extends PublicActor {
                 contract.equals(actor.getContract()) &&
                 new HashSet<>(actorTitles).containsAll(actor.getActorTitles()) &&
                 new HashSet<>(actorAwards).containsAll(actor.getActorAwards());
+    }
+
+    public Map<String, Object> toSimpleMap() {
+        Map<String, Object> map = new HashMap<>();
+
+        map.put("actorId", actorId);
+        map.put("surname", getSurname());
+        map.put("firstname", getFirstname());
+        map.put("patronymic", getPatronymic());
+        map.put("phone", getPhone());
+        map.put("contract", contract.getAmount());
+        map.put("workExperience", TimeUtils.getFullDateMark(workExperience.getDays()));
+        map.put("actorAwards", actorAwards.stream()
+                .map(ActorAward::getAwardName)
+                .toList());
+        map.put("actorTitles", actorTitles.stream()
+                .map(ActorTitle::getTitleName)
+                .toList());
+
+        return map;
     }
 }
