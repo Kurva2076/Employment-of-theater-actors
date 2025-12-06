@@ -123,15 +123,23 @@ public abstract class ActorRepBase {
     /**
      * Получить список k по счёту n объектов (пагинация)
      */
-    public List<Actor> getKNShortList(int k, int n) {
+    public List<PublicActor> getKNShortList(int k, int n) {
         List<Actor> actors = readAll();
-        int start = k * n - n;
-        int end = Math.min(k * n , actors.size());
+        List<PublicActor> publicActors = new ArrayList<>();
 
-        if (start >= actors.size()) {
+        for (Actor actor : actors) {
+            publicActors.add(new PublicActor(
+                    actor.getSurname(), actor.getFirstname(), actor.getFirstname(), actor.getPhone()
+            ));
+        }
+
+        int start = k * n - n;
+        int end = Math.min(k * n , publicActors.size());
+
+        if (start >= publicActors.size()) {
             return new ArrayList<>();
         }
-        return new ArrayList<>(actors.subList(start, end));
+        return new ArrayList<>(publicActors.subList(start, end));
     }
 
     /**

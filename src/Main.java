@@ -197,7 +197,7 @@ public class Main {
         System.out.println(actorRepJson.getById(5));
 
         System.out.println("Актёры со 2-ой страницы по 3 актёра");
-        for (Actor actor : actorRepJson.getKNShortList(2, 3)) {
+        for (PublicActor actor : actorRepJson.getKNShortList(2, 3)) {
             System.out.println(actor);
         }
 
@@ -273,7 +273,7 @@ public class Main {
         System.out.println(actorRepYaml.getById(5));
 
         System.out.println("Актёры со 2-ой страницы по 3 актёра");
-        for (Actor actor : actorRepYaml.getKNShortList(2, 3)) {
+        for (PublicActor actor : actorRepYaml.getKNShortList(2, 3)) {
             System.out.println(actor);
         }
 
