@@ -153,6 +153,7 @@ public class Main {
     }
 
     private static void showActorRepJsonFunctions() {
+        System.out.println("JSON:\n");
         ActorRepJson actorRepJson = new ActorRepJson("src/actors.json");
 
         String string1 = "2,4,12;12000.32;Артист мира ЮНЕСКО,;;Петров;Пётр;;9183288772";
@@ -225,9 +226,11 @@ public class Main {
         } else {
             System.out.println("Не удалось удалить, так как актёра с id = 7 не существует");
         }
+        System.out.println("\n\n");
     }
 
     private static void showActorRepYamlFunctions() {
+        System.out.println("YAML:\n");
         ActorRepYaml actorRepYaml = new ActorRepYaml("src/actors.yaml");
 
         String string1 = "2,4,12;12000.32;Артист мира ЮНЕСКО,;;Петров;Пётр;;9183288772";
@@ -299,11 +302,13 @@ public class Main {
         } else {
             System.out.println("Не удалось удалить, так как актёра с id = 7 не существует");
         }
+        System.out.println("\n\n");
     }
 
     public static void main(String[] args) {
 //        Main.showActorFunctions();
-//        Main.showActorRepJsonFunctions();
+
+        Main.showActorRepJsonFunctions();
         Main.showActorRepYamlFunctions();
     }
 }
