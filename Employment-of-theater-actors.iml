@@ -27,5 +27,6 @@
     </orderEntry>
     <orderEntry type="library" name="gson-2.13.2" level="project" />
     <orderEntry type="library" name="snakeyaml-2.5" level="project" />
+    <orderEntry type="library" name="postgresql-42.7.3" level="project" />
   </component>
 </module>
