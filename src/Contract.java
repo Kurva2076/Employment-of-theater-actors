@@ -1,3 +1,4 @@
+import java.math.BigDecimal;
 import java.util.Objects;
 
 public class Contract {
@@ -55,7 +56,7 @@ public class Contract {
 
     @Override
     public String toString() {
-        return amount + " руб.";
+        return BigDecimal.valueOf(amount).toPlainString() + " руб.";
     }
 
     @Override
