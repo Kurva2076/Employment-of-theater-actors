@@ -1,13 +1,11 @@
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import org.jetbrains.annotations.NotNull;
+import org.yaml.snakeyaml.Yaml;
 
 import java.io.File;
 import java.lang.reflect.Type;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.regex.Pattern;
 
 public class Parser {
@@ -20,6 +18,9 @@ public class Parser {
             case String string when dataType.equals("json") -> parseJsonString(string);
             case File file when dataType.equals("json") -> parseJsonFile(file);
             case String string when dataType.equals("jsonpath") -> parseJsonFile(string);
+            case String string when dataType.equals("yaml") -> parseYamlString(string);
+            case File file when dataType.equals("yaml") -> parseYamlFile(file);
+            case String string when dataType.equals("yamlpath") -> parseYamlFile(string);
             case Map<?, ?> map when (dataType.equals("map") || dataType.equals("dict") || dataType.equals("hashmap")) -> parseMap(map);
             case String string when (
                     (dataType.equals("string") || dataType.equals("str")) &&
@@ -61,6 +62,26 @@ public class Parser {
 
     private static Map<String, ?> parseJsonFile(String json) {
         return parseJsonFile(new File(json));
+    }
+
+    @SuppressWarnings("unchecked")
+    private static Map<String, ?> parseYamlString(String yamlString) {
+        Yaml yaml = new Yaml();
+        Object data = yaml.load(yamlString);
+
+        if (data instanceof Map<?, ?> map) {
+            return (Map<String, ?>) map;
+        }
+
+        return Collections.emptyMap();
+    }
+
+    private static Map<String, ?> parseYamlFile(File yaml) {
+        return parseYamlString(CommonUtils.readFileLines(yaml));
+    }
+
+    private static Map<String, ?> parseYamlFile(String yaml) {
+        return parseYamlFile(new File(yaml));
     }
 
     private static Map<String, ?> parseMap(Map<?, ?> map) {
