@@ -2,7 +2,7 @@ import java.io.File;
 import java.util.*;
 
 public class Main {
-    private static void showBaseActorFunctions() {
+    private static void showActorFunctions() {
         WorkExperience workExperience = new WorkExperience(2, 4, 12);
         Contract contract = new Contract(123456);
         ActorTitle actorTitle = new ActorTitle("Артист мира ЮНЕСКО");
@@ -31,7 +31,7 @@ public class Main {
         for (Object object : workExperiences1) {
             try {
                 WorkExperience workExperience1 = new WorkExperience(object);
-                System.out.println(workExperience1.getWorkExperience());
+                System.out.println(workExperience1.getDays());
             } catch (Exception e) {
                 System.out.println(e.getMessage());
             }
@@ -40,13 +40,13 @@ public class Main {
         Double[] workExperience3 = new Double[]{1.0, 2.0, 3.3};
         String[] workExperience4 = new String[]{"1", "2", "3"};
         System.out.println(
-                (new WorkExperience(workExperience2[0], workExperience2[1], workExperience2[2])).getWorkExperience()
+                (new WorkExperience(workExperience2[0], workExperience2[1], workExperience2[2])).getDays()
         );
         System.out.println(
-                (new WorkExperience(workExperience3[0], workExperience3[1], workExperience3[2])).getWorkExperience()
+                (new WorkExperience(workExperience3[0], workExperience3[1], workExperience3[2])).getDays()
         );
         System.out.println(
-                (new WorkExperience(workExperience4[0], workExperience4[1], workExperience4[2])).getWorkExperience()
+                (new WorkExperience(workExperience4[0], workExperience4[1], workExperience4[2])).getDays()
         );
         System.out.println();
 
@@ -103,7 +103,7 @@ public class Main {
         );
         for (String[] fio : actors) {
             try {
-                Actor actor1 = new Actor(fio[0], fio[1], fio[2], fio[3], workExperience, contract, actorTitles, actorAwards);
+                Actor actor1 = new Actor(null, fio[0], fio[1], fio[2], fio[3], workExperience, contract, actorTitles, actorAwards);
                 System.out.println(actor1);
             } catch (Exception e) {
                 System.out.println(e.getMessage());
@@ -152,7 +152,83 @@ public class Main {
         System.out.println(actor1.equals(new Actor(string3, "json"))); // Ожидаем false
     }
 
+    private static void showActorRepJsonFunctions() {
+        ActorRepJson actorRepJson = new ActorRepJson("src/actors.json");
+
+        String string1 = "2,4,12;12000.32;Артист мира ЮНЕСКО,;;Петров;Пётр;;9183288772";
+        List<Object> list1 = List.of("365", "10000000.52", "", "Оскар", "Пупков", "Пуп", "Пупович", "9180888772");
+        File file = new File("src/data.json");
+        String string2 = "src/data.json";
+        String string3 = """
+                {
+                  "surname": "Кален",
+                  "firstname": "Эдвард",
+                  "patronymic": "Карлайлович",
+                  "phone": "89186482734",
+                  "contract": 465312,
+                  "workExperience": [1, 2, 3],
+                  "actorAwards": "Сатурн",
+                  "actorTitles": ["Народный артист СССР"]
+                }""";
+        Map<?, ?> map1 = Map.of(
+                "surname", "Кален",
+                "firstname", "Карлайл",
+                "phone", "9187283994",
+                "contract", 798456,
+                "workExperience", List.of(1, 2, 3),
+                "actorAwards", List.of("Оскар", "Золотой орёл"),
+                "actorTitles", "Артист мира ЮНЕСКО"
+        );
+        String string4 = "surname=Сергеев;firstname=Сергей;patronymic=;phone=9183288662;workExperience=3,8,7;contract=52;actorTitles=Артист мира ЮНЕСКО,Народный артист СССР;actorAwards=Сезар";
+
+        actorRepJson.writeAll(List.of(new Actor(string1, "str"), new Actor(list1, "list"), new Actor(file, "json")), true);
+        actorRepJson.add(new Actor(string2, "jsonpath"));
+        actorRepJson.add(new Actor(string3, "json"));
+        actorRepJson.add(new Actor(map1, "map"));
+        actorRepJson.add(new Actor(string4, "str"));
+
+        System.out.println("Все актёры");
+        for (Actor actor : actorRepJson.readAll()) {
+            System.out.println(actor);
+        }
+
+        System.out.println("Актёр с id = 5");
+        System.out.println(actorRepJson.getById(5));
+
+        System.out.println("Актёры со 2-ой страницы по 3 актёра");
+        for (Actor actor : actorRepJson.getKNShortList(2, 3)) {
+            System.out.println(actor);
+        }
+
+        System.out.println("Отсортированные актёры по стажу");
+        for (Actor actor : actorRepJson.sortBy("workExperience")) {
+            System.out.println(actor);
+        }
+
+        System.out.println("Замена актёра с id = 3");
+        if (actorRepJson.replaceById(3, new Actor(string1, "str"))) {
+            System.out.println(actorRepJson.getById(3));
+        } else {
+            System.out.println("Не удалось произвести замену, так как актёра с id = 3 не существует");
+        }
+
+        System.out.println("Замена актёра с id = 10");
+        if (actorRepJson.replaceById(10, new Actor(string1, "str"))) {
+            System.out.println(actorRepJson.getById(10));
+        } else {
+            System.out.println("Не удалось произвести замену, так как актёра с id = 10 не существует");
+        }
+
+        System.out.println("Количество актёров: " + actorRepJson.getCount());
+        if (actorRepJson.deleteById(7)) {
+            System.out.println("Количество актёров после удаления: " + actorRepJson.getCount());
+        } else {
+            System.out.println("Не удалось удалить, так как актёра с id = 7 не существует");
+        }
+    }
+
     public static void main(String[] args) {
-        Main.showBaseActorFunctions();
+//        Main.showActorFunctions();
+        Main.showActorRepJsonFunctions();
     }
 }
