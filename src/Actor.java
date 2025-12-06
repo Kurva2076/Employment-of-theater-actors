@@ -42,7 +42,7 @@ public class Actor extends PublicActor {
                 (String) map.get("patronymic"),
                 (String) map.get("phone"),
                 new WorkExperience(map.get("workExperience")),
-                new Contract(map.get("contract")),
+                new Contract(null, map.get("contract")),
                 (map.get("actorTitles") == null) ? new ArrayList<>() : (
                         (!(map.get("actorTitles") instanceof String)) ? (List<?>) map.get("actorTitles") : (
                                 (map.get("actorTitles").toString().isBlank()) ? new ArrayList<>() :
@@ -98,7 +98,7 @@ public class Actor extends PublicActor {
     }
 
     public void setContract(Object amount) {
-        this.contract = new Contract(amount);
+        this.contract = new Contract(null, amount);
     }
 
     public List<ActorTitle> getActorTitles() {

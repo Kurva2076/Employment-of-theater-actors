@@ -3,15 +3,19 @@ public class ActorAward {
     private String awardName;
 
     public ActorAward(String awardName) {
-        this((Object) awardName);
+        this(null, (Object) awardName);
     }
 
     public ActorAward(ActorAward actorAward) {
-        this((Object) actorAward);
+        this(null, (Object) actorAward);
     }
 
-    public ActorAward(Object award) {
-        this.awardId = CommonUtils.generateId();
+    public ActorAward(Number awardId, Object award) {
+        if (awardId == null) {
+            this.awardId = CommonUtils.generateId();
+        } else {
+            this.awardId = Validator.validateField(awardId, "id", Integer.class, false);
+        }
         this.awardName = Validator.validateField(award, "actorAward", String.class, false);
     }
 

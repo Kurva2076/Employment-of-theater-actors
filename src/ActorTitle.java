@@ -3,15 +3,19 @@ public class ActorTitle {
     private String titleName;
 
     public ActorTitle(String titleName) {
-        this((Object) titleName);
+        this(null, (Object) titleName);
     }
 
     public ActorTitle(ActorTitle actorTitle) {
-        this((Object) actorTitle);
+        this(null, (Object) actorTitle);
     }
 
-    public ActorTitle(Object title) {
-        this.titleId = CommonUtils.generateId();
+    public ActorTitle(Number titleId, Object title) {
+        if (titleId == null) {
+            this.titleId = CommonUtils.generateId();
+        } else {
+            this.titleId = Validator.validateField(titleId, "id", Integer.class, false);
+        }
         this.titleName = Validator.validateField(title, "actorTitle", String.class, false);
     }
 

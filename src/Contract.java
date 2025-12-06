@@ -6,23 +6,27 @@ public class Contract {
     private Double amount;
 
     public Contract(Double amount) {
-        this((Object) amount);
+        this(null, (Object) amount);
     }
 
     public Contract(Integer amount) {
-        this((Object) amount);
+        this(null, (Object) amount);
     }
 
     public Contract(String amount) {
-        this((Object) amount);
+        this(null, (Object) amount);
     }
 
     public Contract(Contract contract) {
-        this((Object) contract);
+        this(null, (Object) contract);
     }
 
-    public Contract(Object amount) {
-        this.contractId = CommonUtils.generateId();
+    public Contract(Number contractId, Object amount) {
+        if (contractId == null) {
+            this.contractId = CommonUtils.generateId();
+        } else {
+            this.contractId = Validator.validateField(contractId, "id", Integer.class, false);
+        }
         this.amount = Validator.validateField(amount, "amount", Double.class, false);
     }
 

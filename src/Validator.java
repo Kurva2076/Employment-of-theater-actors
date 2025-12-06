@@ -4,6 +4,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Locale;
 import java.util.regex.Pattern;
 
 public class Validator {
@@ -55,6 +56,7 @@ public class Validator {
         return switch (id) {
             case Integer integer -> validateID(integer);
             case Double iDouble -> validateID(iDouble);
+            case Long iLong -> validateID(iLong);
             default -> throw new ClassNotPreparedException("Класс объекта не соответствует возможным");
         };
     }
@@ -68,6 +70,10 @@ public class Validator {
     }
 
     private static Integer validateID(Double id) {
+        return validateID(id.intValue());
+    }
+
+    private static Integer validateID(Long id) {
         return validateID(id.intValue());
     }
 

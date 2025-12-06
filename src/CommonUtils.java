@@ -153,11 +153,11 @@ public class CommonUtils {
             }
         } else if (castedClass == ActorTitle.class && !(originalArray instanceof ActorTitle[])) {
             for (Object o : originalArray) {
-                castedList.add(castedClass.cast(new ActorTitle(o)));
+                castedList.add(castedClass.cast(new ActorTitle(null, o)));
             }
         } else if (castedClass == ActorAward.class && !(originalArray instanceof ActorAward[])) {
             for (Object o : originalArray) {
-                castedList.add(castedClass.cast(new ActorAward(o)));
+                castedList.add(castedClass.cast(new ActorAward(null, o)));
             }
         } else {
             for (Object o : originalArray) {
