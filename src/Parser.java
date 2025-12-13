@@ -21,7 +21,8 @@ public class Parser {
             case String string when dataType.equals("yaml") -> parseYamlString(string);
             case File file when dataType.equals("yaml") -> parseYamlFile(file);
             case String string when dataType.equals("yamlpath") -> parseYamlFile(string);
-            case Map<?, ?> map when (dataType.equals("map") || dataType.equals("dict") || dataType.equals("hashmap")) -> parseMap(map);
+            case Map<?, ?> map when (dataType.equals("map") || dataType.equals("dict") || dataType.equals("hashmap")) ->
+                    parseMap(map);
             case String string when (
                     (dataType.equals("string") || dataType.equals("str")) &&
                             Pattern.compile("(?:[\\w\\s]+=[^=\\n;]*[\\n;])+").matcher(string).results().toList().size() == 1
@@ -44,14 +45,16 @@ public class Parser {
                     (dataType.equals("string") || dataType.equals("str")) &&
                             Pattern.compile("(?:[^=\\n;]*[\\n;])+").matcher(string).results().toList().size() == 1
             ) -> parseListString(string);
-            case List<?> list when dataType.equals("list") || dataType.equals("arraylist") || dataType.equals("array") -> parseList(list);
+            case List<?> list when dataType.equals("list") || dataType.equals("arraylist") || dataType.equals("array") ->
+                    parseList(list);
             default -> throw new IllegalArgumentException("Указан некорректный тип данных");
         };
     }
 
     private static Map<String, ?> parseJsonString(String json) {
         Gson gson = new Gson();
-        Type type = new TypeToken<Map<String, Object>>(){}.getType();
+        Type type = new TypeToken<Map<String, Object>>() {
+        }.getType();
 
         return gson.fromJson(json, type);
     }

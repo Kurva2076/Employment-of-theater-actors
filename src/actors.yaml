@@ -7,16 +7,16 @@ actors:
   surname: Пупков
   contract: 1.000000052E7
   workExperience: [1, 0, 5]
-  actorTitles: &id008 []
+  actorTitles: &id005 []
 - firstname: Пётр
   patronymic: null
   actorId: 3
-  actorAwards: *id008
+  actorAwards: *id005
   phone: '9183288772'
   surname: Петров
   contract: 12000.32
   workExperience: [2, 4, 12]
-  actorTitles: [Артист мира ЮНЕСКО]
+  actorTitles: *id005
 - firstname: Петр
   patronymic: Сергеевич
   actorId: 4
@@ -47,9 +47,108 @@ actors:
 - firstname: Пётр
   patronymic: null
   actorId: 1
-  actorAwards: *id008
+  actorAwards: *id005
   phone: '9183288772'
   surname: Петров
   contract: 12000.32
   workExperience: [2, 4, 12]
   actorTitles: [Артист мира ЮНЕСКО]
+- firstname: Эдвард
+  patronymic: Карлайлович
+  actorId: 8
+  actorAwards: [Сатурн]
+  phone: '9186482734'
+  surname: Кален
+  contract: 465312.0
+  workExperience: [1, 2, 3]
+  actorTitles: [Народный артист СССР]
+- firstname: Карлайл
+  patronymic: null
+  actorId: 9
+  actorAwards: [Оскар, Золотой орёл]
+  phone: '9187283994'
+  surname: Кален
+  contract: 798456.0
+  workExperience: [1, 2, 3]
+  actorTitles: [Артист мира ЮНЕСКО]
+- firstname: Сергей
+  patronymic: null
+  actorId: 10
+  actorAwards: [Сезар]
+  phone: '9183288662'
+  surname: Сергеев
+  contract: 52.0
+  workExperience: [3, 8, 7]
+  actorTitles: [Артист мира ЮНЕСКО, Народный артист СССР]
+- firstname: Петр
+  patronymic: Сергеевич
+  actorId: 11
+  actorAwards: [Оскар]
+  phone: '9183288772'
+  surname: Иванов
+  contract: 1234.0
+  workExperience: [1, 2, 3]
+  actorTitles: [Артист мира ЮНЕСКО]
+- firstname: Эдвард
+  patronymic: Карлайлович
+  actorId: 12
+  actorAwards: [Сатурн]
+  phone: '9186482734'
+  surname: Кален
+  contract: 465312.0
+  workExperience: [1, 2, 3]
+  actorTitles: [Народный артист СССР]
+- firstname: Карлайл
+  patronymic: null
+  actorId: 13
+  actorAwards: [Оскар, Золотой орёл]
+  phone: '9187283994'
+  surname: Кален
+  contract: 798456.0
+  workExperience: [1, 2, 3]
+  actorTitles: [Артист мира ЮНЕСКО]
+- firstname: Сергей
+  patronymic: null
+  actorId: 14
+  actorAwards: [Сезар]
+  phone: '9183288662'
+  surname: Сергеев
+  contract: 52.0
+  workExperience: [3, 8, 7]
+  actorTitles: [Артист мира ЮНЕСКО, Народный артист СССР]
+- firstname: Петр
+  patronymic: Сергеевич
+  actorId: 15
+  actorAwards: [Оскар]
+  phone: '9183288772'
+  surname: Иванов
+  contract: 1234.0
+  workExperience: [1, 2, 3]
+  actorTitles: [Артист мира ЮНЕСКО]
+- firstname: Эдвард
+  patronymic: Карлайлович
+  actorId: 16
+  actorAwards: [Сатурн]
+  phone: '9186482734'
+  surname: Кален
+  contract: 465312.0
+  workExperience: [1, 2, 3]
+  actorTitles: [Народный артист СССР]
+- firstname: Карлайл
+  patronymic: null
+  actorId: 17
+  actorAwards: [Оскар, Золотой орёл]
+  phone: '9187283994'
+  surname: Кален
+  contract: 798456.0
+  workExperience: [1, 2, 3]
+  actorTitles: [Артист мира ЮНЕСКО]
+- firstname: Сергей
+  patronymic: null
+  actorId: 18
+  actorAwards: [Сезар]
+  phone: '9183288662'
+  surname: Сергеев
+  contract: 52.0
+  workExperience: [3, 8, 7]
+  actorTitles: [Артист мира ЮНЕСКО, Народный артист СССР]

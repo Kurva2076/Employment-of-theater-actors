@@ -5,11 +5,7 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.lang.reflect.Field;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Random;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -30,7 +26,7 @@ public class CommonUtils {
     }
 
     public static @NotNull String capitalize(@NotNull String string, @NotNull String delimiters) {
-        Pattern delimitersPattern = Pattern.compile(delimiters, Pattern.CASE_INSENSITIVE|Pattern.MULTILINE);
+        Pattern delimitersPattern = Pattern.compile(delimiters, Pattern.CASE_INSENSITIVE | Pattern.MULTILINE);
         Matcher matcher = delimitersPattern.matcher(string);
         String[] stringParts = delimitersPattern.split(string);
         List<String> capitalizedParts = new ArrayList<>();
@@ -208,7 +204,7 @@ public class CommonUtils {
     }
 
     private static String getShortName(String name) {
-        Pattern delimitersPattern = Pattern.compile(Validator.NAME_PARTS_DELIMITERS_PATTERN, Pattern.CASE_INSENSITIVE|Pattern.MULTILINE);
+        Pattern delimitersPattern = Pattern.compile(Validator.NAME_PARTS_DELIMITERS_PATTERN, Pattern.CASE_INSENSITIVE | Pattern.MULTILINE);
         Matcher matcher = delimitersPattern.matcher(name);
         String[] nameParts = delimitersPattern.split(name);
         List<String> shortNameParts = new ArrayList<>();

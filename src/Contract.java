@@ -6,19 +6,19 @@ public class Contract {
     private Double amount;
 
     public Contract(Double amount) {
-        this(null, (Object) amount);
+        this(null, amount);
     }
 
     public Contract(Integer amount) {
-        this(null, (Object) amount);
+        this(null, amount);
     }
 
     public Contract(String amount) {
-        this(null, (Object) amount);
+        this(null, amount);
     }
 
     public Contract(Contract contract) {
-        this(null, (Object) contract);
+        this(null, contract);
     }
 
     public Contract(Number contractId, Object amount) {

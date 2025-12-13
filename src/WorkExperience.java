@@ -57,7 +57,7 @@ public class WorkExperience {
     }
 
     public void setDays(Integer[] days) {
-        setWorkExperience((Object) days);
+        setWorkExperience(days);
     }
 
     public void setWorkExperience(Double[] workExperience) {
@@ -120,7 +120,7 @@ public class WorkExperience {
         if (!(obj instanceof WorkExperience workExperience1)) {
             return false;
         }
-        
+
         return Objects.equals(days, workExperience1.getDays());
     }
 }

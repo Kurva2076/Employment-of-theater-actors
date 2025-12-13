@@ -3,11 +3,11 @@ public class ActorAward {
     private String awardName;
 
     public ActorAward(String awardName) {
-        this(null, (Object) awardName);
+        this(null, awardName);
     }
 
     public ActorAward(ActorAward actorAward) {
-        this(null, (Object) actorAward);
+        this(null, actorAward);
     }
 
     public ActorAward(Number awardId, Object award) {

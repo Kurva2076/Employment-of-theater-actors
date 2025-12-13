@@ -3,11 +3,11 @@ public class ActorTitle {
     private String titleName;
 
     public ActorTitle(String titleName) {
-        this(null, (Object) titleName);
+        this(null, titleName);
     }
 
     public ActorTitle(ActorTitle actorTitle) {
-        this(null, (Object) actorTitle);
+        this(null, actorTitle);
     }
 
     public ActorTitle(Number titleId, Object title) {

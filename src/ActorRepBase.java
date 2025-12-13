@@ -139,7 +139,7 @@ public abstract class ActorRepBase implements ActorRepository {
         }
 
         int start = k * n - n;
-        int end = Math.min(k * n , publicActors.size());
+        int end = Math.min(k * n, publicActors.size());
 
         if (start >= publicActors.size()) {
             return new ArrayList<>();

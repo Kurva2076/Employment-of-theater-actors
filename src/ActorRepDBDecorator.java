@@ -8,7 +8,7 @@ public abstract class ActorRepDBDecorator implements ActorRepository {
     protected ActorRepDBDecorator(ActorRepository source) {
         ExtractResult r = extractDbAndCtx(source);
         this.repo = r.repo;
-        this.ctx  = r.ctx;
+        this.ctx = r.ctx;
     }
 
     private static ExtractResult extractDbAndCtx(ActorRepository src) {
@@ -23,8 +23,6 @@ public abstract class ActorRepDBDecorator implements ActorRepository {
                 "ActorRepository должен быть ActorRepDB или ActorRepDBDecorator"
         );
     }
-
-    protected record ExtractResult(ActorRepDB repo, SqlQueryContext ctx) {}
 
     @Override
     public Actor getById(long id) {
@@ -54,5 +52,8 @@ public abstract class ActorRepDBDecorator implements ActorRepository {
     @Override
     public boolean delete(long id) {
         return repo.delete(id);
+    }
+
+    protected record ExtractResult(ActorRepDB repo, SqlQueryContext ctx) {
     }
 }

@@ -15,9 +15,7 @@ public abstract class ActorRepBaseDecorator implements ActorRepository {
         if (repo instanceof ActorRepBaseDecorator decorator) {
             return decorator.repo;
         }
-        throw new IllegalArgumentException(
-                "ActorRepository is not backed by ActorRepBase"
-        );
+        throw new IllegalArgumentException("ActorRepository is not backed by ActorRepBase");
     }
 
     @Override

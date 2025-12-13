@@ -4,10 +4,10 @@ import org.jetbrains.annotations.NotNull;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Locale;
 import java.util.regex.Pattern;
 
 public class Validator {
+    public static final String NAME_PARTS_DELIMITERS_PATTERN = "[\\s\\-'`]";
     private static final List<String> ACTOR_AWARDS = new ArrayList<>(
             Arrays.asList("Оскар", "Золотой глобус", "Сезар", "Золотой орёл", "Сатурн")
     );
@@ -17,7 +17,6 @@ public class Validator {
                     "Народный артист СССР", "Артист мира ЮНЕСКО"
             )
     );
-    public static final String NAME_PARTS_DELIMITERS_PATTERN = "[\\s\\-'`]";
     private static final String NAME_DUPLICATED_CHARS = "\\s\\-'`";
 
     @org.jetbrains.annotations.Contract("null, _, _, false -> fail; null, _, _, true -> null")

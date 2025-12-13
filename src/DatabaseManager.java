@@ -1,5 +1,8 @@
 import java.sql.*;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 
 public class DatabaseManager {
     private static DatabaseManager instance;
@@ -50,7 +53,8 @@ public class DatabaseManager {
         try {
             getConnection().rollback();
             getConnection().setAutoCommit(true);
-        } catch (SQLException ignored) {}
+        } catch (SQLException ignored) {
+        }
     }
 
     public int execute(String sql, Object... params) throws SQLException {
@@ -86,11 +90,11 @@ public class DatabaseManager {
         }
     }
 
-    public List<Map<String,Object>> fetchAll(String sql, Object... params) throws SQLException {
+    public List<Map<String, Object>> fetchAll(String sql, Object... params) throws SQLException {
         try (PreparedStatement ps = prepare(sql, params);
              ResultSet rs = ps.executeQuery()) {
 
-            List<Map<String,Object>> list = new ArrayList<>();
+            List<Map<String, Object>> list = new ArrayList<>();
             while (rs.next()) list.add(row(rs));
             return list;
         }
@@ -103,8 +107,8 @@ public class DatabaseManager {
         return ps;
     }
 
-    private Map<String,Object> row(ResultSet rs) throws SQLException {
-        Map<String,Object> map = new LinkedHashMap<>();
+    private Map<String, Object> row(ResultSet rs) throws SQLException {
+        Map<String, Object> map = new LinkedHashMap<>();
         ResultSetMetaData md = rs.getMetaData();
         for (int i = 1; i <= md.getColumnCount(); i++)
             map.put(md.getColumnLabel(i), rs.getObject(i));

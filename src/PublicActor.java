@@ -51,7 +51,7 @@ public class PublicActor {
     public String toString() {
         return "Фамилия: " + surname + "\n" +
                 "Имя: " + firstname + "\n" +
-                ((patronymic != null) ? "Отчество: " + patronymic + "\n": "") +
+                ((patronymic != null) ? "Отчество: " + patronymic + "\n" : "") +
                 "Телефон: " + CommonUtils.formatPhone(phone) + "\n";
     }
 
