@@ -24,13 +24,11 @@ public class ActorRepDB {
 
     public List<PublicActor> getKNShortList(int k, int n) {
         int offset = (k - 1) * n;
+        String baseSQL = "SELECT surname, firstname, patronymic, phone FROM actor";
+        baseSQL += " LIMIT ? OFFSET ?";
 
         try {
-            List<Map<String, Object>> rows = db.fetchAll(
-                    "SELECT surname, firstname, patronymic, phone " +
-                            "FROM actor ORDER BY actor_id LIMIT ? OFFSET ?",
-                    n, offset
-            );
+            List<Map<String, Object>> rows = db.fetchAll(baseSQL, n, offset);
 
             List<PublicActor> list = new ArrayList<>();
             for (var r : rows) {
@@ -117,8 +115,10 @@ public class ActorRepDB {
     }
 
     public long getCount() {
+        String sql = "SELECT COUNT(*) FROM actor";
+
         try {
-            Long count = db.fetchScalar("SELECT COUNT(*) FROM actor");
+            Long count = db.fetchScalar(sql);
             return count != null ? count : 0L;
         } catch (SQLException e) {
             throw new RuntimeException("Ошибка getCount", e);
