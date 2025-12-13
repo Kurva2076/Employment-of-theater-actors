@@ -43,11 +43,10 @@ public class ActorRepositoryAdapter implements ActorRepository {
     @Override
     public boolean update(long id, Actor actor) {
         if (adaptee instanceof ActorRepDB db) {
-            db.update(id, actor);
-            return true;
+            return db.update(id, actor);
         }
         if (adaptee instanceof ActorRepBase file) {
-            return file.replaceById((int) id, actor);
+            return file.update(id, actor);
         }
         throw new UnsupportedOperationException("Unknown repository type");
     }
@@ -55,11 +54,10 @@ public class ActorRepositoryAdapter implements ActorRepository {
     @Override
     public boolean delete(long id) {
         if (adaptee instanceof ActorRepDB db) {
-            db.delete(id);
-            return true;
+            return db.delete(id);
         }
         if (adaptee instanceof ActorRepBase file) {
-            return file.deleteById((int) id);
+            return file.delete(id);
         }
         throw new UnsupportedOperationException("Unknown repository type");
     }

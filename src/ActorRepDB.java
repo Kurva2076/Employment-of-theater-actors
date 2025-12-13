@@ -1,7 +1,7 @@
 import java.sql.SQLException;
 import java.util.*;
 
-public class ActorRepDB {
+public class ActorRepDB implements ActorRepository {
     private final DatabaseManager db;
 
     public ActorRepDB(DatabaseManager db) {
@@ -26,8 +26,12 @@ public class ActorRepDB {
         int offset = (k - 1) * n;
         String sql = ctx.apply("SELECT surname, firstname, patronymic, phone FROM actor") + " LIMIT ? OFFSET ?";
 
+        Object[] allParams = Arrays.copyOf(ctx.getParams(), ctx.getParams().length + 2);
+        allParams[ctx.getParams().length] = n;
+        allParams[ctx.getParams().length + 1] = offset;
+
         try {
-            List<Map<String, Object>> rows = db.fetchAll(sql, ctx.getParams(), n, offset);
+            List<Map<String, Object>> rows = db.fetchAll(sql, allParams);
 
             List<PublicActor> list = new ArrayList<>();
             for (var r : rows) {
@@ -78,7 +82,7 @@ public class ActorRepDB {
         }
     }
 
-    public void update(long id, Actor actor) {
+    public boolean update(long id, Actor actor) {
         try {
             db.begin();
 
@@ -107,14 +111,16 @@ public class ActorRepDB {
             db.rollback();
             throw new RuntimeException("Ошибка update", e);
         }
+        return true;
     }
 
-    public void delete(long id) {
+    public boolean delete(long id) {
         try {
             db.execute("DELETE FROM actor WHERE actor_id=?", id);
         } catch (SQLException e) {
             throw new RuntimeException("Ошибка delete", e);
         }
+        return true;
     }
 
     public long getCount(SqlQueryContext ctx) {

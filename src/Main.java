@@ -207,14 +207,14 @@ public class Main {
         }
 
         System.out.println("Замена актёра с id = 3");
-        if (actorRepJson.replaceById(3, new Actor(string1, "str"))) {
+        if (actorRepJson.update(3, new Actor(string1, "str"))) {
             System.out.println(actorRepJson.getById(3));
         } else {
             System.out.println("Не удалось произвести замену, так как актёра с id = 3 не существует");
         }
 
         System.out.println("Замена актёра с id = 10");
-        if (actorRepJson.replaceById(10, new Actor(string1, "str"))) {
+        if (actorRepJson.update(10, new Actor(string1, "str"))) {
             System.out.println(actorRepJson.getById(10));
         } else {
             System.out.println("Не удалось произвести замену, так как актёра с id = 10 не существует");
@@ -283,14 +283,14 @@ public class Main {
         }
 
         System.out.println("Замена актёра с id = 3");
-        if (actorRepYaml.replaceById(3, new Actor(string1, "str"))) {
+        if (actorRepYaml.update(3, new Actor(string1, "str"))) {
             System.out.println(actorRepYaml.getById(3));
         } else {
             System.out.println("Не удалось произвести замену, так как актёра с id = 3 не существует");
         }
 
         System.out.println("Замена актёра с id = 10");
-        if (actorRepYaml.replaceById(10, new Actor(string1, "str"))) {
+        if (actorRepYaml.update(10, new Actor(string1, "str"))) {
             System.out.println(actorRepYaml.getById(10));
         } else {
             System.out.println("Не удалось произвести замену, так как актёра с id = 10 не существует");

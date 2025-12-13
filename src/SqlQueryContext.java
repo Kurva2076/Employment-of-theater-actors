@@ -27,7 +27,7 @@ public class SqlQueryContext {
         return sql.toString();
     }
 
-    public List<Object> getParams() {
-        return params;
+    public Object[] getParams() {
+        return params.toArray();
     }
 }

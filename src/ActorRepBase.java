@@ -4,7 +4,7 @@ import java.io.IOException;
 import java.util.*;
 import java.util.regex.Pattern;
 
-public abstract class ActorRepBase {
+public abstract class ActorRepBase implements ActorRepository {
     protected final File file;
 
     /**
@@ -120,6 +120,11 @@ public abstract class ActorRepBase {
         return null;
     }
 
+    @Override
+    public Actor getById(long id) {
+        return getById(Integer.getInteger(String.valueOf(id)));
+    }
+
     /**
      * Получить список k по счёту n объектов (пагинация)
      */
@@ -231,6 +236,11 @@ public abstract class ActorRepBase {
         return false;
     }
 
+    @Override
+    public boolean update(long id, Actor actor) {
+        return replaceById((int) id, actor);
+    }
+
     /**
      * Удалить элемент списка по ID
      */
@@ -249,10 +259,15 @@ public abstract class ActorRepBase {
         return false;
     }
 
+    @Override
+    public boolean delete(long id) {
+        return deleteById((int) id);
+    }
+
     /**
      * Получить количество элементов
      */
-    public int getCount() {
+    public long getCount() {
         return readAll().size();
     }
 }
