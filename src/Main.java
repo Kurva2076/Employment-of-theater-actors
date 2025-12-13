@@ -559,7 +559,7 @@ public class Main {
     }
 
     private static void showActorRepDBDecoratorsFunctions() {
-        System.out.println("DECORATORS BD:\n");
+        System.out.println("DECORATORS DB:\n");
 
         DatabaseManager dbManager = DatabaseManager.getInstance(
                 "jdbc:postgresql://localhost:5432/pis",
@@ -568,15 +568,35 @@ public class Main {
         );
         ActorRepDB actorRepDB = new ActorRepDB(dbManager);
         ActorRepository repo =
-                new ActorDBSortDecorator(
-                        new ActorDBFilterDecorator(actorRepDB)
+                new ActorRepDBSortDecorator(
+                        new ActorRepDBFilterDecorator(actorRepDB)
                                 .bySurname("Иванов")
-                ).byExperience(SortSQL.DESC);
+                ).byExperience(Sort.DESC);
         ActorRepositoryAdapter adapter = new ActorRepositoryAdapter(repo);
 
         for (PublicActor actor : adapter.getKNShortList(1, 5)) {
             System.out.println(actor);
         }
+        System.out.println(adapter.getCount());
+    }
+
+    private static void showActorRepFileDecoratorsFunctions() {
+        System.out.println("DECORATORS FILE:\n");
+
+        ActorRepYaml actorRepYaml = new ActorRepYaml("src/actors.yaml");
+
+        ActorRepository repo =
+                new ActorRepBaseSortDecorator(
+                        new ActorRepBaseFilterDecorator(actorRepYaml)
+                                .bySurname("Кален")
+                ).byPhone(Sort.DESC);
+
+        ActorRepositoryAdapter adapter = new ActorRepositoryAdapter(repo);
+
+        for (PublicActor actor : adapter.getKNShortList(1, 5)) {
+            System.out.println(actor);
+        }
+
         System.out.println(adapter.getCount());
     }
 
@@ -590,6 +610,7 @@ public class Main {
 
 //        Main.showActorRepositoryFunctions();
 
-        Main.showActorRepDBDecoratorsFunctions();
+//        Main.showActorRepDBDecoratorsFunctions();
+        Main.showActorRepFileDecoratorsFunctions();
     }
 }

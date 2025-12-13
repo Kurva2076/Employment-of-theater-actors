@@ -4,12 +4,12 @@ public class ActorRepDBSortDecorator extends ActorRepDBDecorator {
         super(repo);
     }
 
-    public ActorRepDBSortDecorator bySurname(SortSQL sort) {
+    public ActorRepDBSortDecorator bySurname(Sort sort) {
         ctx.setOrderBy("surname", sort);
         return this;
     }
 
-    public ActorRepDBSortDecorator byExperience(SortSQL sort) {
+    public ActorRepDBSortDecorator byExperience(Sort sort) {
         ctx.setOrderBy("work_experience", sort);
         return this;
     }

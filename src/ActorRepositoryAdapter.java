@@ -29,6 +29,9 @@ public class ActorRepositoryAdapter implements ActorRepository {
         if (adaptee instanceof ActorRepBase file) {
             return file.getKNShortList(k, n);
         }
+        if (adaptee instanceof ActorRepBaseDecorator decorator) {
+            return decorator.getKNShortList(k, n);
+        }
         throw new UnsupportedOperationException("Unknown repository type");
     }
 
@@ -75,6 +78,9 @@ public class ActorRepositoryAdapter implements ActorRepository {
         }
         if (adaptee instanceof ActorRepBase file) {
             return file.getCount();
+        }
+        if (adaptee instanceof ActorRepBaseDecorator decorator) {
+            return decorator.getCount();
         }
         throw new UnsupportedOperationException("Unknown repository type");
     }

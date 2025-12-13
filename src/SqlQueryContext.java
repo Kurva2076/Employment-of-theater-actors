@@ -11,7 +11,7 @@ public class SqlQueryContext {
         params.add(value);
     }
 
-    public void setOrderBy(String field, SortSQL sort) {
+    public void setOrderBy(String field, Sort sort) {
         this.orderBy = " ORDER BY " + field + " " + sort.name();
     }
 
