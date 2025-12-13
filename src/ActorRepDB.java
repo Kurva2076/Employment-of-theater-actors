@@ -22,13 +22,12 @@ public class ActorRepDB {
         }
     }
 
-    public List<PublicActor> getKNShortList(int k, int n) {
+    public List<PublicActor> getKNShortList(int k, int n, SqlQueryContext ctx) {
         int offset = (k - 1) * n;
-        String baseSQL = "SELECT surname, firstname, patronymic, phone FROM actor";
-        baseSQL += " LIMIT ? OFFSET ?";
+        String sql = ctx.apply("SELECT surname, firstname, patronymic, phone FROM actor") + " LIMIT ? OFFSET ?";
 
         try {
-            List<Map<String, Object>> rows = db.fetchAll(baseSQL, n, offset);
+            List<Map<String, Object>> rows = db.fetchAll(sql, ctx.getParams(), n, offset);
 
             List<PublicActor> list = new ArrayList<>();
             for (var r : rows) {
@@ -43,6 +42,10 @@ public class ActorRepDB {
         } catch (SQLException e) {
             throw new RuntimeException("Ошибка getKNShortList", e);
         }
+    }
+
+    public List<PublicActor> getKNShortList(int k, int n) {
+        return getKNShortList(k, n, new SqlQueryContext());
     }
 
     public Actor add(Actor actor) {
@@ -114,15 +117,19 @@ public class ActorRepDB {
         }
     }
 
-    public long getCount() {
-        String sql = "SELECT COUNT(*) FROM actor";
+    public long getCount(SqlQueryContext ctx) {
+        String sql = ctx.apply("SELECT COUNT(*) FROM actor");
 
         try {
-            Long count = db.fetchScalar(sql);
+            Long count = db.fetchScalar(sql, ctx.getParams());
             return count != null ? count : 0L;
         } catch (SQLException e) {
             throw new RuntimeException("Ошибка getCount", e);
         }
+    }
+
+    public long getCount() {
+        return getCount(new SqlQueryContext());
     }
 
     private Actor extractActor(Map<String, Object> row) throws SQLException {
