@@ -558,6 +558,28 @@ public class Main {
         System.out.println("\n\n");
     }
 
+    private static void showActorRepDBDecoratorsFunctions() {
+        System.out.println("DECORATORS BD:\n");
+
+        DatabaseManager dbManager = DatabaseManager.getInstance(
+                "jdbc:postgresql://localhost:5432/pis",
+                "myuser",
+                "1234"
+        );
+        ActorRepDB actorRepDB = new ActorRepDB(dbManager);
+        ActorRepository repo =
+                new ActorDBSortDecorator(
+                        new ActorDBFilterDecorator(actorRepDB)
+                                .bySurname("Иванов")
+                ).byExperience(SortSQL.DESC);
+        ActorRepositoryAdapter adapter = new ActorRepositoryAdapter(repo);
+
+        for (PublicActor actor : adapter.getKNShortList(1, 5)) {
+            System.out.println(actor);
+        }
+        System.out.println(adapter.getCount());
+    }
+
     public static void main(String[] args) {
 //        Main.showActorFunctions();
 
@@ -566,6 +588,8 @@ public class Main {
 
 //        Main.showActorRepDBFunctions();
 
-        Main.showActorRepositoryFunctions();
+//        Main.showActorRepositoryFunctions();
+
+        Main.showActorRepDBDecoratorsFunctions();
     }
 }

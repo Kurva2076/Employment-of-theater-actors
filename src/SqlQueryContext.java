@@ -22,8 +22,10 @@ public class SqlQueryContext {
             sql.append(" WHERE ")
                     .append(String.join(" AND ", whereParts));
         }
+        if (!baseSql.startsWith("SELECT COUNT(*)")) {
+            sql.append(orderBy);
+        }
 
-        sql.append(orderBy);
         return sql.toString();
     }
 

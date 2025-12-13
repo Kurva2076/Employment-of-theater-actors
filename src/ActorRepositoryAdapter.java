@@ -13,7 +13,7 @@ public class ActorRepositoryAdapter implements ActorRepository {
             return db.getById(id);
         }
         if (adaptee instanceof ActorRepBase file) {
-            return file.getById((int) id);
+            return file.getById(id);
         }
         throw new UnsupportedOperationException("Unknown repository type");
     }
@@ -22,6 +22,9 @@ public class ActorRepositoryAdapter implements ActorRepository {
     public List<PublicActor> getKNShortList(int k, int n) {
         if (adaptee instanceof ActorRepDB db) {
             return db.getKNShortList(k, n);
+        }
+        if (adaptee instanceof ActorRepDBDecorator dbDecorator) {
+            return dbDecorator.getKNShortList(k, n);
         }
         if (adaptee instanceof ActorRepBase file) {
             return file.getKNShortList(k, n);
@@ -66,6 +69,9 @@ public class ActorRepositoryAdapter implements ActorRepository {
     public long getCount() {
         if (adaptee instanceof ActorRepDB db) {
             return db.getCount();
+        }
+        if (adaptee instanceof ActorRepDBDecorator dbDecorator) {
+            return dbDecorator.getCount();
         }
         if (adaptee instanceof ActorRepBase file) {
             return file.getCount();
