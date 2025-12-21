@@ -185,7 +185,7 @@ public class Main {
         );
         String string4 = "surname=Сергеев;firstname=Сергей;patronymic=;phone=9183288662;workExperience=3,8,7;contract=52;actorTitles=Артист мира ЮНЕСКО,Народный артист СССР;actorAwards=Сезар";
 
-        actorRepJson.writeAll(List.of(new Actor(string1, "str"), new Actor(list1, "list"), new Actor(file, "json")), true);
+        actorRepJson.writeAll(List.of(new Actor(string1, "str"), new Actor(list1, "list"), new Actor(file, "json")));
         actorRepJson.add(new Actor(string2, "jsonpath"));
         actorRepJson.add(new Actor(string3, "json"));
         actorRepJson.add(new Actor(map1, "map"));
@@ -261,7 +261,7 @@ public class Main {
         );
         String string4 = "surname=Сергеев;firstname=Сергей;patronymic=;phone=9183288662;workExperience=3,8,7;contract=52;actorTitles=Артист мира ЮНЕСКО,Народный артист СССР;actorAwards=Сезар";
 
-        actorRepYaml.writeAll(List.of(new Actor(string1, "str"), new Actor(list1, "list"), new Actor(file, "yaml")), true);
+        actorRepYaml.writeAll(List.of(new Actor(string1, "str"), new Actor(list1, "list"), new Actor(file, "yaml")));
         actorRepYaml.add(new Actor(string2, "yamlpath"));
         actorRepYaml.add(new Actor(string3, "yaml"));
         actorRepYaml.add(new Actor(map1, "map"));

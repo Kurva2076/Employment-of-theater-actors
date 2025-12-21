@@ -35,7 +35,7 @@ public abstract class ActorRepBase implements ActorRepository {
                 throw new RuntimeException("Ошибка создания файла " + file.getName());
             }
 
-            writeAll(new ArrayList<>(), false);
+            writeAll(new ArrayList<>());
         }
     }
 
@@ -63,7 +63,7 @@ public abstract class ActorRepBase implements ActorRepository {
         Map<String, ?> map = Parser.parse(file, getExtension(), Actor.class);
 
         if (map == null || map.get("actors") == null) {
-            writeAll(actors, false);
+            writeAll(actors);
             return actors;
         }
 
@@ -83,19 +83,7 @@ public abstract class ActorRepBase implements ActorRepository {
     /**
      * Запись всех значений в файл
      */
-    public void writeAll(List<Actor> actors, boolean reindex) {
-        if (reindex) {
-            try {
-                var field = Actor.class.getDeclaredField("actorId");
-                field.setAccessible(true);
-                for (int index = 0; index < actors.size(); ) {
-                    field.set(actors.get(index), ++index);
-                }
-            } catch (Exception e) {
-                throw new RuntimeException("Не удалось установить новый actorId", e);
-            }
-        }
-
+    public void writeAll(List<Actor> actors) {
         Map<String, Object> wrapper = new HashMap<>();
 
         // Преобразуем каждый Actor в простой Map
@@ -168,7 +156,7 @@ public abstract class ActorRepBase implements ActorRepository {
                     default -> throw new IllegalArgumentException("Unknown sort field: " + field);
                 }
         );
-        writeAll(actors, false);
+        writeAll(actors);
 
         return actors;
     }
@@ -189,7 +177,7 @@ public abstract class ActorRepBase implements ActorRepository {
         }
 
         actors.add(actor);
-        writeAll(actors, false);
+        writeAll(actors);
 
         return actor;
     }
@@ -229,7 +217,7 @@ public abstract class ActorRepBase implements ActorRepository {
                 }
 
                 actors.set(i, newActor);
-                writeAll(actors, false);
+                writeAll(actors);
                 return true;
             }
         }
@@ -252,7 +240,7 @@ public abstract class ActorRepBase implements ActorRepository {
             Actor a = it.next();
             if (Objects.equals(a.getActorId(), id)) {
                 it.remove();
-                writeAll(actors, false);
+                writeAll(actors);
                 return true;
             }
         }
