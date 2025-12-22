@@ -16,6 +16,18 @@ public class ActorRepBaseSortDecorator extends ActorRepBaseDecorator {
         return this;
     }
 
+    public ActorRepBaseSortDecorator byFirstname(Sort sort) {
+        comparator = Comparator.comparing(PublicActor::getFirstname);
+        if (sort == Sort.DESC) comparator = comparator.reversed();
+        return this;
+    }
+
+    public ActorRepBaseSortDecorator byPatronymic(Sort sort) {
+        comparator = Comparator.comparing(PublicActor::getPatronymic);
+        if (sort == Sort.DESC) comparator = comparator.reversed();
+        return this;
+    }
+
     public ActorRepBaseSortDecorator byPhone(Sort sort) {
         comparator = Comparator.comparing(PublicActor::getPhone);
         if (sort == Sort.DESC) comparator = comparator.reversed();

@@ -9,6 +9,16 @@ public class ActorRepDBSortDecorator extends ActorRepDBDecorator {
         return this;
     }
 
+    public ActorRepDBSortDecorator byFirstname(Sort sort) {
+        ctx.setOrderBy("firstname", sort);
+        return this;
+    }
+
+    public ActorRepDBSortDecorator byPatronymic(Sort sort) {
+        ctx.setOrderBy("patronymic", sort);
+        return this;
+    }
+
     public ActorRepDBSortDecorator byExperience(Sort sort) {
         ctx.setOrderBy("work_experience", sort);
         return this;
