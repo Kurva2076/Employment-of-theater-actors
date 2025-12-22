@@ -1,8 +1,9 @@
+package utils;
+
 import java.util.ArrayList;
 import java.util.List;
 
 public class SqlQueryContext {
-
     private final List<String> whereParts = new ArrayList<>();
     private final List<Object> params = new ArrayList<>();
     private String orderBy = "";

@@ -1,3 +1,10 @@
+package model;
+
+import utils.CommonUtils;
+import utils.Parser;
+import utils.TimeUtils;
+import utils.Validator;
+
 import java.util.*;
 
 public class Actor extends PublicActor {
@@ -19,8 +26,8 @@ public class Actor extends PublicActor {
         }
 
         this.initials = CommonUtils.getInitials(getSurname(), getFirstname(), getPatronymic());
-        this.workExperience = Validator.validateField(workExperience, "WorkExperience", WorkExperience.class, false);
-        this.contract = Validator.validateField(contract, "Contract", Contract.class, false);
+        this.workExperience = Validator.validateField(workExperience, "model.WorkExperience", WorkExperience.class, false);
+        this.contract = Validator.validateField(contract, "model.Contract", Contract.class, false);
         this.actorTitles = CommonUtils.casteInnerClass(
                 Validator.validateField(actorTitles, "actorTitles", List.class, false), ActorTitle.class
         );
@@ -104,7 +111,7 @@ public class Actor extends PublicActor {
     }
 
     public void setWorkExperience(WorkExperience workExperience) {
-        this.workExperience = Validator.validateField(workExperience, "WorkExperience", WorkExperience.class, false);
+        this.workExperience = Validator.validateField(workExperience, "model.WorkExperience", WorkExperience.class, false);
     }
 
     public void setWorkExperience(Object workExperience) {
@@ -116,7 +123,7 @@ public class Actor extends PublicActor {
     }
 
     public void setContract(Contract contract) {
-        this.contract = Validator.validateField(contract, "Contract", Contract.class, false);
+        this.contract = Validator.validateField(contract, "model.Contract", Contract.class, false);
     }
 
     public void setContract(Object amount) {

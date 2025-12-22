@@ -1,3 +1,7 @@
+package utils;
+
+import model.ActorAward;
+import model.ActorTitle;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.File;

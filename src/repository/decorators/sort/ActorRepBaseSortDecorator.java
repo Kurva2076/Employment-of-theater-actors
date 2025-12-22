@@ -1,3 +1,10 @@
+package repository.decorators.sort;
+
+import model.PublicActor;
+import repository.decorators.ActorRepBaseDecorator;
+import repository.interfaces.ActorRep;
+import utils.Sort;
+
 import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Stream;
@@ -6,7 +13,7 @@ public class ActorRepBaseSortDecorator extends ActorRepBaseDecorator {
 
     private Comparator<PublicActor> comparator;
 
-    public ActorRepBaseSortDecorator(ActorRepository repo) {
+    public ActorRepBaseSortDecorator(ActorRep repo) {
         super(repo);
     }
 

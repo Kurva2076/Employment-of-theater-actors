@@ -1,7 +1,14 @@
+package repository.interactions;
+
+import model.*;
+import repository.interfaces.ActorRep;
+import utils.DatabaseManager;
+import utils.SqlQueryContext;
+
 import java.sql.SQLException;
 import java.util.*;
 
-public class ActorRepDB implements ActorRepository {
+public class ActorRepDB implements ActorRep {
     private final DatabaseManager db;
 
     public ActorRepDB(DatabaseManager db) {

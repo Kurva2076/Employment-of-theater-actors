@@ -1,18 +1,26 @@
+package repository.decorators;
+
+import model.Actor;
+import model.PublicActor;
+import repository.interactions.ActorRepDB;
+import repository.interfaces.ActorRep;
+import utils.SqlQueryContext;
+
 import java.util.List;
 import java.util.Map;
 
-public abstract class ActorRepDBDecorator implements ActorRepository {
+public abstract class ActorRepDBDecorator implements ActorRep {
 
     protected final ActorRepDB repo;
     protected final SqlQueryContext ctx;
 
-    protected ActorRepDBDecorator(ActorRepository source) {
+    protected ActorRepDBDecorator(ActorRep source) {
         ExtractResult r = extractDbAndCtx(source);
         this.repo = r.repo;
         this.ctx = r.ctx;
     }
 
-    private static ExtractResult extractDbAndCtx(ActorRepository src) {
+    private static ExtractResult extractDbAndCtx(ActorRep src) {
         if (src instanceof ActorRepDB db) {
             return new ExtractResult(db, new SqlQueryContext());
         }
@@ -21,7 +29,7 @@ public abstract class ActorRepDBDecorator implements ActorRepository {
         }
 
         throw new IllegalArgumentException(
-                "ActorRepository должен быть ActorRepDB или ActorRepDBDecorator"
+                "repository.interfaces.ActorRep должен быть repository.interactions.ActorRepDB или repository.decorators.ActorRepDBDecorator"
         );
     }
 

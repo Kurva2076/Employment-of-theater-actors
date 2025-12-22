@@ -1,3 +1,8 @@
+package model;
+
+import utils.CommonUtils;
+import utils.Validator;
+
 import java.math.BigDecimal;
 import java.util.Objects;
 

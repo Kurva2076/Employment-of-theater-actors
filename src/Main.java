@@ -1,3 +1,16 @@
+import model.*;
+import repository.adapters.ActorRepAdapter;
+import repository.decorators.filter.ActorRepBaseFilterDecorator;
+import repository.decorators.filter.ActorRepDBFilterDecorator;
+import repository.decorators.sort.ActorRepBaseSortDecorator;
+import repository.decorators.sort.ActorRepDBSortDecorator;
+import repository.interactions.ActorRepDB;
+import repository.interactions.ActorRepJson;
+import repository.interactions.ActorRepYaml;
+import repository.interfaces.ActorRep;
+import utils.DatabaseManager;
+import utils.Sort;
+
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -16,7 +29,7 @@ public class Main {
         actorTitles.add(actorTitle);
         actorAwards.add(actorAward);
 
-        // Разные способы инициализации WorkExperience и примеры валидации
+        // Разные способы инициализации model.WorkExperience и примеры валидации
         List<Object> workExperiences1 = new ArrayList<>(
                 Arrays.asList(
                         "-123.0", "+132465.123", -123, 123, "asd", 123.31,
@@ -53,7 +66,7 @@ public class Main {
         );
         System.out.println();
 
-        // Разные способы инициализации Contract и примеры валидации
+        // Разные способы инициализации model.Contract и примеры валидации
         List<Object> contracts1 = new ArrayList<>(Arrays.asList(
                 "-123.0", "+132465.123", -123, 123, -123.0, 123.0, contract, workExperience, null
         ));
@@ -67,7 +80,7 @@ public class Main {
         }
         System.out.println();
 
-        // Разные способы инициализации ActorAward и примеры валидации
+        // Разные способы инициализации model.ActorAward и примеры валидации
         List<Object> actorAwards1 = new ArrayList<>(Arrays.asList("", "Оскар", actorAwards.getFirst(), contract, null));
         for (Object object : actorAwards1) {
             try {
@@ -79,7 +92,7 @@ public class Main {
         }
         System.out.println();
 
-        // Разные способы инициализации ActorTitle и примеры валидации
+        // Разные способы инициализации model.ActorTitle и примеры валидации
         List<Object> actorTitles1 = new ArrayList<>(Arrays.asList(
                 "", "Артист мира ЮНЕСКО", actorTitles.getFirst(), contract, null
         ));
@@ -93,7 +106,7 @@ public class Main {
         }
         System.out.println();
 
-        // Валидация Actor
+        // Валидация model.Actor
         List<String[]> actors = List.of(
                 new String[]{"Петров", "Пётр", "Петрович", "9183288772"},
                 new String[]{"Петров", "Пётр", null, "9183288772"},
@@ -477,7 +490,7 @@ public class Main {
                 "myuser",
                 "1234"
         );
-        ActorRepositoryAdapter adapter1 = new ActorRepositoryAdapter(new ActorRepDB(dbManager));
+        ActorRepAdapter adapter1 = new ActorRepAdapter(new ActorRepDB(dbManager));
 
         System.out.println("Добавляем актёров:");
         Actor actor1 = adapter1.add(actor);
@@ -545,7 +558,7 @@ public class Main {
 
         System.out.println("\n\nADAPTER YAML:\n");
 
-        ActorRepositoryAdapter adapter2 = new ActorRepositoryAdapter(new ActorRepYaml("src/actors.yaml"));
+        ActorRepAdapter adapter2 = new ActorRepAdapter(new ActorRepYaml("src/actors.yaml"));
 
         adapter2.add(new Actor(string2, "yamlpath"));
         adapter2.add(new Actor(string3, "yaml"));
@@ -585,12 +598,12 @@ public class Main {
                 "1234"
         );
         ActorRepDB actorRepDB = new ActorRepDB(dbManager);
-        ActorRepository repo =
+        ActorRep repo =
                 new ActorRepDBSortDecorator(
                         new ActorRepDBFilterDecorator(actorRepDB)
                                 .bySurname("Иванов")
                 ).byExperience(Sort.DESC);
-        ActorRepositoryAdapter adapter = new ActorRepositoryAdapter(repo);
+        ActorRepAdapter adapter = new ActorRepAdapter(repo);
 
         for (PublicActor actor : adapter.getKNShortList(1, 5)) {
             System.out.println(actor);
@@ -603,13 +616,13 @@ public class Main {
 
         ActorRepYaml actorRepYaml = new ActorRepYaml("src/actors.yaml");
 
-        ActorRepository repo =
+        ActorRep repo =
                 new ActorRepBaseSortDecorator(
                         new ActorRepBaseFilterDecorator(actorRepYaml)
                                 .bySurname("Кален")
                 ).byPhone(Sort.DESC);
 
-        ActorRepositoryAdapter adapter = new ActorRepositoryAdapter(repo);
+        ActorRepAdapter adapter = new ActorRepAdapter(repo);
 
         for (PublicActor actor : adapter.getKNShortList(1, 5)) {
             System.out.println(actor);
@@ -621,10 +634,10 @@ public class Main {
     public static void main(String[] args) {
 //        Main.showActorFunctions();
 
-//        Main.showActorRepJsonFunctions();
+        Main.showActorRepJsonFunctions();
 //        Main.showActorRepYamlFunctions();
 
-        Main.showActorRepDBFunctions();
+//        Main.showActorRepDBFunctions();
 
 //        Main.showActorRepositoryFunctions();
 

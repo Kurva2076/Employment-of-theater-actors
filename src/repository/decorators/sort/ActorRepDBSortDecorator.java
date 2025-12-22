@@ -1,6 +1,12 @@
+package repository.decorators.sort;
+
+import repository.decorators.ActorRepDBDecorator;
+import repository.interfaces.ActorRep;
+import utils.Sort;
+
 public class ActorRepDBSortDecorator extends ActorRepDBDecorator {
 
-    public ActorRepDBSortDecorator(ActorRepository repo) {
+    public ActorRepDBSortDecorator(ActorRep repo) {
         super(repo);
     }
 

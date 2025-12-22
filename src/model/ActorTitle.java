@@ -1,3 +1,8 @@
+package model;
+
+import utils.CommonUtils;
+import utils.Validator;
+
 public class ActorTitle {
     private final Integer titleId;
     private String titleName;

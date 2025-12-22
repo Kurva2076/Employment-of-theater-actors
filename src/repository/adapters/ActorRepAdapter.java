@@ -1,10 +1,20 @@
+package repository.adapters;
+
+import model.Actor;
+import model.PublicActor;
+import repository.decorators.ActorRepBaseDecorator;
+import repository.decorators.ActorRepDBDecorator;
+import repository.interactions.ActorRepBase;
+import repository.interactions.ActorRepDB;
+import repository.interfaces.ActorRep;
+
 import java.util.List;
 import java.util.Map;
 
-public class ActorRepositoryAdapter implements ActorRepository {
+public class ActorRepAdapter implements ActorRep {
     private final Object adaptee;
 
-    public ActorRepositoryAdapter(Object adaptee) {
+    public ActorRepAdapter(Object adaptee) {
         this.adaptee = adaptee;
     }
 

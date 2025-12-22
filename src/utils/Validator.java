@@ -1,4 +1,10 @@
+package utils;
+
 import com.sun.jdi.ClassNotPreparedException;
+import model.ActorAward;
+import model.ActorTitle;
+import model.Contract;
+import model.WorkExperience;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
@@ -40,7 +46,7 @@ public class Validator {
             case "patronymic" -> validatePatronymic((String) value);
             case "phone" -> validatePhone((String) value);
             case "actorTitles", "actorAwards" -> validateList((List<?>) value, true, false);
-            case "Contract", "WorkExperience", "ActorTitle", "ActorAward" -> value;
+            case "model.Contract", "model.WorkExperience", "model.ActorTitle", "model.ActorAward" -> value;
             default -> throw new IllegalArgumentException("Значения параметра " + type + " не корректно");
         };
 

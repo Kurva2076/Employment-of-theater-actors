@@ -1,7 +1,12 @@
+package repository.interfaces;
+
+import model.Actor;
+import model.PublicActor;
+
 import java.util.List;
 import java.util.Map;
 
-public interface ActorRepository {
+public interface ActorRep {
     Actor getById(long id);
 
     List<PublicActor> getKNShortList(int k, int n);

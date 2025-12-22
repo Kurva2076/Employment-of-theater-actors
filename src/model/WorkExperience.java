@@ -1,3 +1,8 @@
+package model;
+
+import utils.TimeUtils;
+import utils.Validator;
+
 import java.util.List;
 import java.util.Objects;
 

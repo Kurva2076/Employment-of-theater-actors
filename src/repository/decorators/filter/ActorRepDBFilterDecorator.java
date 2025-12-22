@@ -1,6 +1,12 @@
+package repository.decorators.filter;
+
+import repository.decorators.ActorRepDBDecorator;
+import repository.interfaces.ActorRep;
+import utils.OperatorSQL;
+
 public class ActorRepDBFilterDecorator extends ActorRepDBDecorator {
 
-    public ActorRepDBFilterDecorator(ActorRepository repo) {
+    public ActorRepDBFilterDecorator(ActorRep repo) {
         super(repo);
     }
 

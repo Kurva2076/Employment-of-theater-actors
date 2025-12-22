@@ -1,22 +1,29 @@
+package repository.decorators;
+
+import model.Actor;
+import model.PublicActor;
+import repository.interactions.ActorRepBase;
+import repository.interfaces.ActorRep;
+
 import java.util.List;
 import java.util.Map;
 
-public abstract class ActorRepBaseDecorator implements ActorRepository {
+public abstract class ActorRepBaseDecorator implements ActorRep {
 
     protected final ActorRepBase repo;
 
-    protected ActorRepBaseDecorator(ActorRepository repo) {
+    protected ActorRepBaseDecorator(ActorRep repo) {
         this.repo = extractBase(repo);
     }
 
-    protected ActorRepBase extractBase(ActorRepository repo) {
+    protected ActorRepBase extractBase(ActorRep repo) {
         if (repo instanceof ActorRepBase base) {
             return base;
         }
         if (repo instanceof ActorRepBaseDecorator decorator) {
             return decorator.repo;
         }
-        throw new IllegalArgumentException("ActorRepository is not backed by ActorRepBase");
+        throw new IllegalArgumentException("repository.interfaces.ActorRep is not backed by repository.interactions.ActorRepBase");
     }
 
     @Override

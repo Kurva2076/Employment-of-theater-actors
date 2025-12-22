@@ -1,3 +1,9 @@
+package repository.decorators.filter;
+
+import model.PublicActor;
+import repository.decorators.ActorRepBaseDecorator;
+import repository.interfaces.ActorRep;
+
 import java.util.List;
 import java.util.stream.Stream;
 
@@ -7,7 +13,7 @@ public class ActorRepBaseFilterDecorator extends ActorRepBaseDecorator {
     private String patronymic;
     private String phonePrefix;
 
-    public ActorRepBaseFilterDecorator(ActorRepository repo) {
+    public ActorRepBaseFilterDecorator(ActorRep repo) {
         super(repo);
     }
 

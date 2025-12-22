@@ -1,11 +1,18 @@
+package repository.interactions;
+
+import model.Actor;
+import model.PublicActor;
+import repository.interfaces.ActorRep;
+import utils.Parser;
+import utils.comparators.ActorComparators;
+
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.lang.reflect.Method;
 import java.util.*;
 import java.util.regex.Pattern;
 
-public abstract class ActorRepBase implements ActorRepository {
+public abstract class ActorRepBase implements ActorRep {
     protected final File file;
 
     /**
@@ -86,6 +93,11 @@ public abstract class ActorRepBase implements ActorRepository {
      */
     public void writeAll(List<Actor> actors) {
         Map<String, Object> wrapper = new HashMap<>();
+
+        List<Actor> allActors = readAll();
+        System.out.println(allActors.size());
+        allActors.addAll(actors);
+        System.out.println(allActors.size());
 
         // Преобразуем каждый Actor в простой Map
         List<Map<String, Object>> simpleList = actors.stream()

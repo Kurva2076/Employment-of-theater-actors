@@ -1,3 +1,8 @@
+package model;
+
+import utils.CommonUtils;
+import utils.Validator;
+
 public class PublicActor {
     private String surname;
     private String firstname;

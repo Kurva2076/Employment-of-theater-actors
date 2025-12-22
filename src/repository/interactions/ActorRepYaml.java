@@ -1,3 +1,5 @@
+package repository.interactions;
+
 import org.yaml.snakeyaml.Yaml;
 
 import java.io.FileWriter;

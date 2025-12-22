@@ -1,3 +1,7 @@
+package utils.comparators;
+
+import model.Actor;
+
 import java.util.Comparator;
 
 public class ActorComparators {

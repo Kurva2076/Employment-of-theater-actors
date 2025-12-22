@@ -1,3 +1,5 @@
+package utils;
+
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
@@ -28,7 +30,7 @@ public class DatabaseManager {
 
     public static synchronized DatabaseManager getInstance() {
         if (instance == null)
-            throw new IllegalStateException("DatabaseManager должен быть инициализирован");
+            throw new IllegalStateException("utils.DatabaseManager должен быть инициализирован");
         return instance;
     }
 
