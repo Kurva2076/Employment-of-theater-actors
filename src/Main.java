@@ -305,6 +305,13 @@ public class Main {
         } else {
             System.out.println("Не удалось удалить, так как актёра с id = 7 не существует");
         }
+
+        System.out.println("Замена поля surname у актёра с id = 10");
+        if (actorRepYaml.update(10, Map.of("surname", "Абабов"))) {
+            System.out.println(actorRepYaml.getById(10));
+        } else {
+            System.out.println("Не удалось произвести замену, так как актёра с id = 10 не существует");
+        }
         System.out.println("\n\n");
     }
 
@@ -402,6 +409,14 @@ public class Main {
 
         System.out.println("После обновления:");
         System.out.println(db.getById(actor2.getActorId()));
+        System.out.println("----------------------------");
+
+        System.out.println("Обновляем актёра...");
+
+        db.update(162, Map.of("surname", "Абабов"));
+
+        System.out.println("После обновления:");
+        System.out.println(db.getById(162));
         System.out.println("----------------------------");
 
         System.out.println("Количество актёров:");
@@ -609,11 +624,11 @@ public class Main {
 //        Main.showActorRepJsonFunctions();
 //        Main.showActorRepYamlFunctions();
 
-//        Main.showActorRepDBFunctions();
+        Main.showActorRepDBFunctions();
 
 //        Main.showActorRepositoryFunctions();
 
 //        Main.showActorRepDBDecoratorsFunctions();
-        Main.showActorRepFileDecoratorsFunctions();
+//        Main.showActorRepFileDecoratorsFunctions();
     }
 }

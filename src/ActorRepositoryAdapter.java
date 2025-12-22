@@ -1,4 +1,5 @@
 import java.util.List;
+import java.util.Map;
 
 public class ActorRepositoryAdapter implements ActorRepository {
     private final Object adaptee;
@@ -56,6 +57,18 @@ public class ActorRepositoryAdapter implements ActorRepository {
         }
         throw new UnsupportedOperationException("Unknown repository type");
     }
+
+    @Override
+    public boolean update(long id, Map<String, Object> updatedFields) {
+        if (adaptee instanceof ActorRepDB db) {
+            return db.update(id, updatedFields);
+        }
+        if (adaptee instanceof ActorRepBase file) {
+            return file.update(id, updatedFields);
+        }
+        throw new UnsupportedOperationException("Unknown repository type");
+    }
+
 
     @Override
     public boolean delete(long id) {

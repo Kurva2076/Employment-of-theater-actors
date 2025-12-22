@@ -1,4 +1,5 @@
 import java.util.List;
+import java.util.Map;
 
 public abstract class ActorRepBaseDecorator implements ActorRepository {
 
@@ -31,6 +32,11 @@ public abstract class ActorRepBaseDecorator implements ActorRepository {
     @Override
     public boolean update(long id, Actor actor) {
         return repo.update(id, actor);
+    }
+
+    @Override
+    public boolean update(long id, Map<String, Object> updatedFields) {
+        return repo.update(id, updatedFields);
     }
 
     @Override

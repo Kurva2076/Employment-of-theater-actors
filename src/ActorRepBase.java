@@ -1,6 +1,7 @@
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.lang.reflect.Method;
 import java.util.*;
 import java.util.regex.Pattern;
 
@@ -110,7 +111,7 @@ public abstract class ActorRepBase implements ActorRepository {
 
     @Override
     public Actor getById(long id) {
-        return getById(Integer.getInteger(String.valueOf(id)));
+        return getById(Integer.valueOf((int) id));
     }
 
     /**
@@ -228,6 +229,22 @@ public abstract class ActorRepBase implements ActorRepository {
     public boolean update(long id, Actor actor) {
         return replaceById((int) id, actor);
     }
+
+    @Override
+    public boolean update(long id, Map<String, Object> updatedFields) {
+        Actor actor = getById(id);
+        if (actor == null) {
+            return false;
+        }
+
+        for (String fieldName : updatedFields.keySet()) {
+            try {
+                actor.set(fieldName, updatedFields.get(fieldName));
+            } catch (ClassCastException _) {}
+        }
+        return update(id, actor);
+    }
+
 
     /**
      * Удалить элемент списка по ID

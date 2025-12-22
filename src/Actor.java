@@ -2,7 +2,7 @@ import java.util.*;
 
 public class Actor extends PublicActor {
     private final Integer actorId;
-    private final String initials;
+    private String initials;
     private WorkExperience workExperience;
     private Contract contract;
     private List<ActorTitle> actorTitles;
@@ -75,6 +75,28 @@ public class Actor extends PublicActor {
 
     public String getInitials() {
         return initials;
+    }
+
+    private void setInitials(String initials) {
+        this.initials = initials;
+    }
+
+    @Override
+    public void setFirstname(String firstname) {
+        super.setFirstname(firstname);
+        setInitials(CommonUtils.getInitials(getSurname(), getFirstname(), getPatronymic()));
+    }
+
+    @Override
+    public void setSurname(String surname) {
+        super.setSurname(surname);
+        setInitials(CommonUtils.getInitials(getSurname(), getFirstname(), getPatronymic()));
+    }
+
+    @Override
+    public void setPatronymic(String firstname) {
+        super.setPatronymic(firstname);
+        setInitials(CommonUtils.getInitials(getSurname(), getFirstname(), getPatronymic()));
     }
 
     public WorkExperience getWorkExperience() {
@@ -167,5 +189,19 @@ public class Actor extends PublicActor {
                 .toList());
 
         return map;
+    }
+
+    public void set(String fieldName, Object fieldValue) {
+        fieldName = fieldName.toLowerCase();
+        switch (fieldName) {
+            case "surname" -> setSurname((String) fieldValue);
+            case "firstname" -> setFirstname((String) fieldValue);
+            case "patronymic" -> setPatronymic((String) fieldValue);
+            case "phone" -> setPhone((String) fieldValue);
+            case "workexperience" -> setWorkExperience(fieldValue);
+            case "contract" -> setContract(fieldValue);
+            case "actortitles" -> setActorTitles((List<?>) fieldValue);
+            case "actorawards" -> setActorAwards((List<?>) fieldValue);
+        }
     }
 }

@@ -1,4 +1,5 @@
 import java.util.List;
+import java.util.Map;
 
 public interface ActorRepository {
     Actor getById(long id);
@@ -8,6 +9,8 @@ public interface ActorRepository {
     Actor add(Actor actor);
 
     boolean update(long id, Actor actor);
+
+    boolean update(long id, Map<String, Object> updatedFields);
 
     boolean delete(long id);
 
