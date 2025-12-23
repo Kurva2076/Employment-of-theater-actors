@@ -3,7 +3,7 @@
     {
       "firstname": "Пуп",
       "patronymic": "Пупович",
-      "actorId": 2,
+      "actorId": 1102567757,
       "actorAwards": [
         "Оскар"
       ],
@@ -18,16 +18,19 @@
       "actorTitles": []
     },
     {
-      "firstname": "Пётр",
-      "actorId": 3,
-      "actorAwards": [],
+      "firstname": "Петр",
+      "patronymic": "Сергеевич",
+      "actorId": 597403061,
+      "actorAwards": [
+        "Оскар"
+      ],
       "phone": "9183288772",
-      "surname": "Петров",
-      "contract": 12000.32,
+      "surname": "Иванов",
+      "contract": 1234.0,
       "workExperience": [
+        1,
         2,
-        4,
-        12
+        3
       ],
       "actorTitles": [
         "Артист мира ЮНЕСКО"
@@ -36,7 +39,7 @@
     {
       "firstname": "Петр",
       "patronymic": "Сергеевич",
-      "actorId": 4,
+      "actorId": 1886413602,
       "actorAwards": [
         "Оскар"
       ],
@@ -55,7 +58,7 @@
     {
       "firstname": "Эдвард",
       "patronymic": "Карлайлович",
-      "actorId": 5,
+      "actorId": 1886413603,
       "actorAwards": [
         "Сатурн"
       ],
@@ -73,7 +76,7 @@
     },
     {
       "firstname": "Карлайл",
-      "actorId": 6,
+      "actorId": 1886413604,
       "actorAwards": [
         "Оскар",
         "Золотой орёл"
@@ -92,7 +95,7 @@
     },
     {
       "firstname": "Пётр",
-      "actorId": 1,
+      "actorId": 1886413601,
       "actorAwards": [],
       "phone": "9183288772",
       "surname": "Петров",
@@ -104,6 +107,25 @@
       ],
       "actorTitles": [
         "Артист мира ЮНЕСКО"
+      ]
+    },
+    {
+      "firstname": "Сергей",
+      "actorId": 1886413605,
+      "actorAwards": [
+        "Сезар"
+      ],
+      "phone": "9183288662",
+      "surname": "Сергеев",
+      "contract": 52.0,
+      "workExperience": [
+        3,
+        8,
+        7
+      ],
+      "actorTitles": [
+        "Артист мира ЮНЕСКО",
+        "Народный артист СССР"
       ]
     }
   ]

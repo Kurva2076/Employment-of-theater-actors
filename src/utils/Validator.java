@@ -52,18 +52,21 @@ public class Validator {
 
         try {
             return expectedClass.cast(validatedValue);
-        } catch (ClassCastException _) {
+        } catch (ClassCastException e) {
             throw new RuntimeException("Поле " + type + " не может приводиться к типу " + expectedClass);
         }
     }
 
     private static Integer validateId(Object id) {
-        return switch (id) {
-            case Integer integer -> validateID(integer);
-            case Double iDouble -> validateID(iDouble);
-            case Long iLong -> validateID(iLong);
-            default -> throw new ClassNotPreparedException("Класс объекта не соответствует возможным");
-        };
+        if (id instanceof Integer) {
+            return validateID((Integer) id);
+        } else if (id instanceof Double) {
+            return validateID((Double) id);
+        } else if (id instanceof Long) {
+            return validateID((Long) id);
+        }
+
+        throw new ClassNotPreparedException("Класс объекта не соответствует возможным");
     }
 
     private static Integer validateID(Integer id) {
@@ -131,13 +134,17 @@ public class Validator {
     }
 
     private static Double validateAmount(Object amount) {
-        return switch (amount) {
-            case String string -> validateAmount(string);
-            case Integer integer -> validateAmount(integer);
-            case Double aDouble -> validateAmount(aDouble);
-            case Contract contract -> contract.getAmount();
-            default -> throw new ClassNotPreparedException("Класс объекта не соответствует возможным");
-        };
+        if (amount instanceof String) {
+            return validateAmount((String) amount);
+        } else if (amount instanceof Integer) {
+            return validateAmount((Integer) amount);
+        } else if (amount instanceof Double) {
+            return validateAmount((Double) amount);
+        } else if (amount instanceof Contract) {
+            return ((Contract) amount).getAmount();
+        }
+
+        throw new ClassNotPreparedException("Класс объекта не соответствует возможным");
     }
 
     private static Double validateAmount(String amount) {
@@ -157,11 +164,13 @@ public class Validator {
     }
 
     private static String validateActorAward(Object award) {
-        return switch (award) {
-            case String string -> validateActorAward(string);
-            case ActorAward actorAward -> actorAward.getAwardName();
-            default -> throw new ClassNotPreparedException("Класс объекта не соответствует возможным");
-        };
+        if (award instanceof String) {
+            return validateActorAward((String) award);
+        } else if (award instanceof ActorAward) {
+            return ((ActorAward) award).getAwardName();
+        }
+
+        throw new ClassNotPreparedException("Класс объекта не соответствует возможным");
     }
 
     private static String validateActorAward(String actorAward) {
@@ -173,11 +182,13 @@ public class Validator {
     }
 
     private static String validateActorTitle(Object title) {
-        return switch (title) {
-            case String string -> validateActorTitle(string);
-            case ActorTitle actorTitle -> actorTitle.getTitleName();
-            default -> throw new ClassNotPreparedException("Класс объекта не соответствует возможным");
-        };
+        if (title instanceof String) {
+            return validateActorTitle((String) title);
+        } else if (title instanceof ActorAward) {
+            return ((ActorTitle) title).getTitleName();
+        }
+
+        throw new ClassNotPreparedException("Класс объекта не соответствует возможным");
     }
 
     private static String validateActorTitle(String actorTitle) {
@@ -189,17 +200,25 @@ public class Validator {
     }
 
     private static Integer validateWorkExperience(Object object) {
-        return switch (object) {
-            case WorkExperience workExperience -> workExperience.getDays();
-            case Integer integer -> validateWorkExperience(integer);
-            case Double aDouble -> validateWorkExperience(aDouble);
-            case String string -> validateWorkExperience(string);
-            case Integer[] integers -> validateWorkExperience((Integer[]) validateArray(integers, false, false));
-            case Double[] doubles -> validateWorkExperience((Double[]) validateArray(doubles, false, false));
-            case String[] strings -> validateWorkExperience((String[]) validateArray(strings, false, false));
-            case List<?> list -> validateWorkExperience(validateList(list, false, false));
-            default -> throw new ClassNotPreparedException("Класс объекта не соответствует возможным");
-        };
+        if (object instanceof WorkExperience) {
+            return ((WorkExperience) object).getDays();
+        } else if (object instanceof Integer) {
+            return validateWorkExperience((Integer) object);
+        } else if (object instanceof Double) {
+            return validateWorkExperience((Double) object);
+        } else if (object instanceof String) {
+            return validateWorkExperience((String) object);
+        } else if (object instanceof Integer[]) {
+            return validateWorkExperience((Integer[]) validateArray((Integer[]) object, false, false));
+        } else if (object instanceof Double[]) {
+            return validateWorkExperience((Double[]) validateArray((Double[]) object, false, false));
+        } else if (object instanceof String[]) {
+            return validateWorkExperience((String[]) validateArray((String[]) object, false, false));
+        } else if (object instanceof List<?>) {
+            return validateWorkExperience(validateList((List<?>) object, false, false));
+        }
+
+        throw new ClassNotPreparedException("Класс объекта не соответствует возможным");
     }
 
     private static Integer validateWorkExperience(Integer workExperience) {

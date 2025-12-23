@@ -16,42 +16,113 @@ public class Parser {
             Actor.class, List.of("actorId", "initials")
     );
 
-    public static <T, N> Map<String, ?> parse(@NotNull T rawData, @NotNull String dataType, @NotNull Class<N> requiredClass) {
-        return switch (rawData) {
-            case String string when dataType.equals("json") -> parseJsonString(string);
-            case File file when dataType.equals("json") -> parseJsonFile(file);
-            case String string when dataType.equals("jsonpath") -> parseJsonFile(string);
-            case String string when dataType.equals("yaml") -> parseYamlString(string);
-            case File file when dataType.equals("yaml") -> parseYamlFile(file);
-            case String string when dataType.equals("yamlpath") -> parseYamlFile(string);
-            case Map<?, ?> map when (dataType.equals("map") || dataType.equals("dict") || dataType.equals("hashmap")) ->
-                    parseMap(map);
-            case String string when (
-                    (dataType.equals("string") || dataType.equals("str")) &&
-                            Pattern.compile("(?:[\\w\\s]+=[^=\\n;]*[\\n;])+").matcher(string).results().toList().size() == 1
-            ) -> parseMapString(string);
-            default -> {
-                List<String> list = new ArrayList<>();
-                Class<?> providedClass = requiredClass;
-                while (providedClass != Object.class) {
-                    list.addAll(CommonUtils.getClassFields(providedClass, EXCLUDED_FIELDS.get(requiredClass)));
-                    providedClass = providedClass.getSuperclass();
-                }
-                yield CommonUtils.makeMap(list, parse(rawData, dataType));
+    public static <T, N> Map<String, ?> parse(
+            @NotNull T rawData,
+            @NotNull String dataType,
+            @NotNull Class<N> requiredClass
+    ) {
+
+        if (rawData instanceof String string) {
+
+            if ("json".equals(dataType)) {
+                return parseJsonString(string);
             }
-        };
+
+            if ("jsonpath".equals(dataType)) {
+                return parseJsonFile(string);
+            }
+
+            if ("yaml".equals(dataType)) {
+                return parseYamlString(string);
+            }
+
+            if ("yamlpath".equals(dataType)) {
+                return parseYamlFile(string);
+            }
+
+            if ("string".equals(dataType) || "str".equals(dataType)) {
+                boolean matches =
+                        Pattern.compile("(?:[\\w\\s]+=[^=\\n;]*[\\n;])+")
+                                .matcher(string)
+                                .results()
+                                .toList()
+                                .size() == 1;
+
+                if (matches) {
+                    return parseMapString(string);
+                }
+            }
+        }
+
+        if (rawData instanceof File file) {
+
+            if ("json".equals(dataType)) {
+                return parseJsonFile(file);
+            }
+
+            if ("yaml".equals(dataType)) {
+                return parseYamlFile(file);
+            }
+        }
+
+        if (rawData instanceof Map<?, ?> map) {
+            if ("map".equals(dataType)
+                    || "dict".equals(dataType)
+                    || "hashmap".equals(dataType)) {
+                return parseMap(map);
+            }
+        }
+
+        /* ===== default-ветка ===== */
+
+        List<String> fields = new ArrayList<>();
+        Class<?> providedClass = requiredClass;
+
+        while (providedClass != Object.class) {
+            fields.addAll(
+                    CommonUtils.getClassFields(
+                            providedClass,
+                            EXCLUDED_FIELDS.get(requiredClass)
+                    )
+            );
+            providedClass = providedClass.getSuperclass();
+        }
+
+        return CommonUtils.makeMap(fields, parse(rawData, dataType));
     }
 
-    public static <T> List<Object> parse(@NotNull T rawData, @NotNull String dataType) {
-        return switch (rawData) {
-            case String string when (
-                    (dataType.equals("string") || dataType.equals("str")) &&
-                            Pattern.compile("(?:[^=\\n;]*[\\n;])+").matcher(string).results().toList().size() == 1
-            ) -> parseListString(string);
-            case List<?> list when dataType.equals("list") || dataType.equals("arraylist") || dataType.equals("array") ->
-                    parseList(list);
-            default -> throw new IllegalArgumentException("Указан некорректный тип данных");
-        };
+    public static <T> List<Object> parse(
+            @NotNull T rawData,
+            @NotNull String dataType
+    ) {
+
+        if (rawData instanceof String string) {
+
+            if ("string".equals(dataType) || "str".equals(dataType)) {
+
+                boolean matches =
+                        Pattern.compile("(?:[^=\\n;]*[\\n;])+")
+                                .matcher(string)
+                                .results()
+                                .toList()
+                                .size() == 1;
+
+                if (matches) {
+                    return parseListString(string);
+                }
+            }
+        }
+
+        if (rawData instanceof List<?> list) {
+
+            if ("list".equals(dataType)
+                    || "arraylist".equals(dataType)
+                    || "array".equals(dataType)) {
+                return parseList(list);
+            }
+        }
+
+        throw new IllegalArgumentException("Указан некорректный тип данных");
     }
 
     private static Map<String, ?> parseJsonString(String json) {

@@ -1,3 +1,5 @@
+package old_main;
+
 import model.*;
 import repository.adapters.ActorRepAdapter;
 import repository.decorators.filter.ActorRepBaseFilterDecorator;
@@ -130,8 +132,8 @@ public class Main {
         // Примеры парсинга разных форматов
         String string1 = "2,4,12;12000;Артист мира ЮНЕСКО,;;Петров;Пётр;;9183288772";
         List<Object> list1 = List.of("365", "1234", "", "Оскар", "Петров", "Пётр", "Петрович", "9183288772");
-        File file = new File("src/data.json");
-        String string2 = "src/data.json";
+        File file = new File("web/data.json");
+        String string2 = "web/data.json";
         String string3 = """
                 {
                   "surname": "Иванов",
@@ -170,12 +172,12 @@ public class Main {
 
     private static void showActorRepJsonFunctions() {
         System.out.println("JSON:\n");
-        ActorRepJson actorRepJson = new ActorRepJson("src/actors.json");
+        ActorRepJson actorRepJson = new ActorRepJson("web/actors.json");
 
         String string1 = "2,4,12;12000.32;Артист мира ЮНЕСКО,;;Петров;Пётр;;9183288772";
         List<Object> list1 = List.of("365", "10000000.52", "", "Оскар", "Пупков", "Пуп", "Пупович", "9180888772");
-        File file = new File("src/data.json");
-        String string2 = "src/data.json";
+        File file = new File("web/data.json");
+        String string2 = "web/data.json";
         String string3 = """
                 {
                   "surname": "Кален",
@@ -247,12 +249,12 @@ public class Main {
 
     private static void showActorRepYamlFunctions() {
         System.out.println("YAML:\n");
-        ActorRepYaml actorRepYaml = new ActorRepYaml("src/actors.yaml");
+        ActorRepYaml actorRepYaml = new ActorRepYaml("web/actors.yaml");
 
         String string1 = "2,4,12;12000.32;Артист мира ЮНЕСКО,;;Петров;Пётр;;9183288772";
         List<Object> list1 = List.of("365", "10000000.52", "", "Оскар", "Пупков", "Пуп", "Пупович", "9180888772");
-        File file = new File("src/data.yaml");
-        String string2 = "src/data.yaml";
+        File file = new File("web/data.yaml");
+        String string2 = "web/data.yaml";
         String string3 = """
                 surname: "Кален"
                 firstname: "Эдвард"
@@ -351,8 +353,8 @@ public class Main {
         );
         String string1 = "2,4,12;12000.32;;;Петров;Пётр;;9183288772";
         List<Object> list1 = List.of("365", "10000000.52", "", "Оскар", "Пупков", "Пуп", "Пупович", "9180888772");
-        File file = new File("src/data.yaml");
-        String string2 = "src/data.yaml";
+        File file = new File("web/data.yaml");
+        String string2 = "web/data.yaml";
         String string3 = """
                 surname: "Кален"
                 firstname: "Эдвард"
@@ -462,8 +464,8 @@ public class Main {
         );
         String string1 = "2,4,12;12000.32;;;Петров;Пётр;;9183288772";
         List<Object> list1 = List.of("365", "10000000.52", "", "Оскар", "Пупков", "Пуп", "Пупович", "9180888772");
-        File file = new File("src/data.yaml");
-        String string2 = "src/data.yaml";
+        File file = new File("web/data.yaml");
+        String string2 = "web/data.yaml";
         String string3 = """
                 surname: "Кален"
                 firstname: "Эдвард"
@@ -558,7 +560,7 @@ public class Main {
 
         System.out.println("\n\nADAPTER YAML:\n");
 
-        ActorRepAdapter adapter2 = new ActorRepAdapter(new ActorRepYaml("src/actors.yaml"));
+        ActorRepAdapter adapter2 = new ActorRepAdapter(new ActorRepYaml("web/actors.yaml"));
 
         adapter2.add(new Actor(string2, "yamlpath"));
         adapter2.add(new Actor(string3, "yaml"));
@@ -614,7 +616,7 @@ public class Main {
     private static void showActorRepFileDecoratorsFunctions() {
         System.out.println("DECORATORS FILE:\n");
 
-        ActorRepYaml actorRepYaml = new ActorRepYaml("src/actors.yaml");
+        ActorRepYaml actorRepYaml = new ActorRepYaml("web/actors.yaml");
 
         ActorRep repo =
                 new ActorRepBaseSortDecorator(
@@ -632,16 +634,16 @@ public class Main {
     }
 
     public static void main(String[] args) {
-//        Main.showActorFunctions();
+//        old_main.Main.showActorFunctions();
 
         Main.showActorRepJsonFunctions();
-//        Main.showActorRepYamlFunctions();
+//        old_main.Main.showActorRepYamlFunctions();
 
-//        Main.showActorRepDBFunctions();
+//        old_main.Main.showActorRepDBFunctions();
 
-//        Main.showActorRepositoryFunctions();
+//        old_main.Main.showActorRepositoryFunctions();
 
-//        Main.showActorRepDBDecoratorsFunctions();
-//        Main.showActorRepFileDecoratorsFunctions();
+//        old_main.Main.showActorRepDBDecoratorsFunctions();
+//        old_main.Main.showActorRepFileDecoratorsFunctions();
     }
 }

@@ -107,7 +107,7 @@ public class ActorRepDB implements ActorRep {
             patronymic = (String) updatedFields.get("patronymic");
             phone = (String) updatedFields.get("phone");
             workExperience = (Integer) updatedFields.get("workExperience");
-        } catch (ClassCastException _) {
+        } catch (ClassCastException e) {
             return false;
         }
 

@@ -252,7 +252,7 @@ public abstract class ActorRepBase implements ActorRep {
         for (String fieldName : updatedFields.keySet()) {
             try {
                 actor.set(fieldName, updatedFields.get(fieldName));
-            } catch (ClassCastException _) {}
+            } catch (ClassCastException e) {}
         }
         return update(id, actor);
     }

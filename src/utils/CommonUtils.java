@@ -52,7 +52,7 @@ public class CommonUtils {
     }
 
     public static @NotNull String removeChars(@NotNull String string, @NotNull String chars) {
-        return Pattern.compile("([" + chars + "])+").matcher(string).replaceAll(_ -> "");
+        return Pattern.compile("([" + chars + "])+").matcher(string).replaceAll(str -> "");
     }
 
     public static @NotNull String readFileLines(@NotNull File file) {
