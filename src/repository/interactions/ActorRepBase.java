@@ -135,7 +135,7 @@ public abstract class ActorRepBase implements ActorRep {
 
         for (Actor actor : actors) {
             publicActors.add(new PublicActor(
-                    actor.getSurname(), actor.getFirstname(), actor.getFirstname(), actor.getPhone()
+                    actor.getActorId(), actor.getSurname(), actor.getFirstname(), actor.getFirstname(), actor.getPhone()
             ));
         }
 

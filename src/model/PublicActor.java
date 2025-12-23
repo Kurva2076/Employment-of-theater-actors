@@ -4,12 +4,18 @@ import utils.CommonUtils;
 import utils.Validator;
 
 public class PublicActor {
+    private final Integer id;
     private String surname;
     private String firstname;
     private String patronymic;
     private String phone;
 
     public PublicActor(String surname, String firstname, String patronymic, String phone) {
+        this(Integer.MAX_VALUE, surname, firstname, patronymic, phone);
+    }
+
+    public PublicActor(Integer actorId, String surname, String firstname, String patronymic, String phone) {
+        this.id = Validator.validateField(actorId, "id", Integer.class, false);
         this.surname = Validator.validateField(surname, "surname", String.class, false);
         this.firstname = Validator.validateField(firstname, "firstname", String.class, false);
         this.patronymic = Validator.validateField(patronymic, "patronymic", String.class, true);
@@ -18,6 +24,10 @@ public class PublicActor {
 
     public PublicActor(String surname, String firstname, String phone) {
         this(surname, firstname, null, phone);
+    }
+
+    public Integer getId() {
+        return id;
     }
 
     public String getSurname() {

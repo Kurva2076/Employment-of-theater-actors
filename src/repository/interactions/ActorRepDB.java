@@ -32,7 +32,7 @@ public class ActorRepDB implements ActorRep {
 
     public List<PublicActor> getKNShortList(int k, int n, SqlQueryContext ctx) {
         int offset = (k - 1) * n;
-        String sql = ctx.apply("SELECT surname, firstname, patronymic, phone FROM actor") + " LIMIT ? OFFSET ?";
+        String sql = ctx.apply("SELECT actor_id, surname, firstname, patronymic, phone FROM actor") + " LIMIT ? OFFSET ?";
 
         Object[] allParams = Arrays.copyOf(ctx.getParams(), ctx.getParams().length + 2);
         allParams[ctx.getParams().length] = n;
@@ -44,6 +44,7 @@ public class ActorRepDB implements ActorRep {
             List<PublicActor> list = new ArrayList<>();
             for (var r : rows) {
                 list.add(new PublicActor(
+                        (Integer) r.get("actor_id"),
                         (String) r.get("surname"),
                         (String) r.get("firstname"),
                         (String) r.get("patronymic"),
