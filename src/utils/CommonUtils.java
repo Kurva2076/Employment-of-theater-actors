@@ -119,7 +119,7 @@ public class CommonUtils {
         if (list.isEmpty()) {
             throw new IllegalArgumentException("Список для преобразования в массив не может быть пустым");
         }
-        Object firstElement = list.getFirst();
+        Object firstElement = list.get(0);
         Class<?> elementClass = firstElement.getClass();
 
         Object array = java.lang.reflect.Array.newInstance(elementClass, list.size());
@@ -226,7 +226,7 @@ public class CommonUtils {
     public static String listToString(List<?> list) {
         String string = "";
         for (Object o : list) {
-            string = string.concat(o.toString()) + (o.equals(list.getLast()) ? "" : ", ");
+            string = string.concat(o.toString()) + (o.equals(list.get(list.size() - 1)) ? "" : ", ");
         }
         return string;
     }
